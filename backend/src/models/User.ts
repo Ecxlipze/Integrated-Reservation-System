@@ -17,6 +17,9 @@ export interface IUser extends Document {
   phone?: string;
   role: UserRole;
   status: 'active' | 'inactive' | 'suspended';
+  referralCode: string;
+  referredBy?: mongoose.Types.ObjectId;
+  hasCompletedFirstOrder: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
@@ -29,7 +32,10 @@ const UserSchema: Schema = new Schema({
   passwordHash: { type: String, required: true },
   phone: { type: String },
   role: { type: String, enum: Object.values(UserRole), default: UserRole.Customer },
-  status: { type: String, enum: ['active', 'inactive', 'suspended'], default: 'active' }
+  status: { type: String, enum: ['active', 'inactive', 'suspended'], default: 'active' },
+  referralCode: { type: String, required: true, unique: true },
+  referredBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  hasCompletedFirstOrder: { type: Boolean, default: false }
 }, { timestamps: true });
 
 UserSchema.pre('save', async function () {

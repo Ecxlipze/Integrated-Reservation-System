@@ -3,9 +3,10 @@ import { Cart } from '../models/Cart';
 import { Order, OrderStatus, PaymentStatus } from '../models/Order';
 import { OrderItem, OrderItemStatus } from '../models/OrderItem';
 import { lockInventory } from './inventory.service';
+import { validateCoupon } from './coupon.service';
 import crypto from 'crypto';
 
-export const processCheckout = async (userId: string, idempotencyKey: string) => {
+export const processCheckout = async (userId: string, idempotencyKey: string, couponCode?: string) => {
   // 1. Idempotency Check: Prevent duplicate master orders
   const existingOrder = await Order.findOne({ 'orderNumber': idempotencyKey });
   if (existingOrder) {
@@ -38,15 +39,27 @@ export const processCheckout = async (userId: string, idempotencyKey: string) =>
       totalAmount += price * quantity;
     }
 
+    let discountAmount = 0;
+    if (couponCode) {
+      const validationResult = await validateCoupon(couponCode, cart.items, totalAmount);
+      if (!validationResult.isValid) {
+        throw new Error(`Invalid coupon: ${validationResult.error}`);
+      }
+      discountAmount = validationResult.discountAmount;
+    }
+
+    const netAmount = totalAmount - discountAmount;
+
     const masterOrder = new Order({
-      orderNumber: idempotencyKey, // Using idempotency key as order number for simplicity, or generate a unique one and store idempotency key separately
+      orderNumber: idempotencyKey, 
       customerId: userId,
       totalAmount,
-      discountAmount: 0,
-      netAmount: totalAmount,
+      discountAmount,
+      netAmount,
       currency: 'USD',
       paymentStatus: PaymentStatus.Pending,
-      status: OrderStatus.PaymentPending
+      status: OrderStatus.PaymentPending,
+      couponCode: discountAmount > 0 ? couponCode : undefined
     });
 
     await masterOrder.save({ session });

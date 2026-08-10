@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const checkoutSchema = z.object({
   body: z.object({
-    // Additional info could go here, like billing address
+    couponCode: z.string().optional()
   }),
   headers: z.object({
     'idempotency-key': z.string().min(1, 'idempotency-key header is required')

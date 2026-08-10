@@ -11,20 +11,33 @@ const generateToken = (userId: string, role: UserRole) => {
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { firstName, lastName, email, password, phone, role } = req.body;
+    const { firstName, lastName, email, password, phone, role, referredByCode } = req.body;
     
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
+    let referredBy;
+    if (referredByCode) {
+      const referrer = await User.findOne({ referralCode: referredByCode });
+      if (referrer) {
+        referredBy = referrer._id;
+      }
+    }
+
+    // Generate simple referral code (e.g., KOT-123456)
+    const referralCode = `${firstName.substring(0, 3).toUpperCase()}-${Math.floor(Math.random() * 1000000)}`;
+
     const user = new User({
       firstName,
       lastName,
       email,
-      passwordHash: password, // will be hashed by pre-save hook
+      passwordHash: password,
       phone,
-      role: role || UserRole.Customer
+      role: role || UserRole.Customer,
+      referralCode,
+      referredBy
     });
 
     await user.save();

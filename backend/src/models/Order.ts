@@ -32,6 +32,7 @@ export interface IOrder extends Document {
   currency: string;
   paymentStatus: PaymentStatus;
   status: OrderStatus;
+  couponCode?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,11 +41,12 @@ const OrderSchema: Schema = new Schema({
   orderNumber: { type: String, required: true, unique: true },
   customerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   totalAmount: { type: Number, required: true },
-  discountAmount: { type: Number, default: 0 },
+  discountAmount: { type: Number, required: true, default: 0 },
   netAmount: { type: Number, required: true },
-  currency: { type: String, default: 'USD' },
+  currency: { type: String, required: true, default: 'USD' },
   paymentStatus: { type: String, enum: Object.values(PaymentStatus), default: PaymentStatus.Pending },
-  status: { type: String, enum: Object.values(OrderStatus), default: OrderStatus.Draft }
+  status: { type: String, enum: Object.values(OrderStatus), default: OrderStatus.Draft },
+  couponCode: { type: String }
 }, { timestamps: true });
 
 export const Order = mongoose.model<IOrder>('Order', OrderSchema);

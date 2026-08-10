@@ -6,6 +6,7 @@ import searchRoutes from './routes/search.routes';
 import cartRoutes from './routes/cart.routes';
 import orderRoutes from './routes/order.routes';
 import paymentRoutes from './routes/payment.routes';
+import couponRoutes from './routes/coupon.routes';
 
 const app: Application = express();
 
@@ -18,6 +19,7 @@ app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/cart', cartRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/payments', paymentRoutes);
+app.use('/api/v1/coupons', couponRoutes);
 
 // Error Handling Middleware
 app.use(errorHandler);

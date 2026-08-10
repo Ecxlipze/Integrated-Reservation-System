@@ -5,8 +5,9 @@ export const checkout = async (req: Request, res: Response, next: NextFunction) 
   try {
     const userId = req.user!.userId;
     const idempotencyKey = req.headers['idempotency-key'] as string;
+    const { couponCode } = req.body;
 
-    const order = await processCheckout(userId, idempotencyKey);
+    const order = await processCheckout(userId, idempotencyKey, couponCode);
 
     res.status(200).json({
       message: 'Checkout successful, pending payment',
