@@ -51,6 +51,12 @@ export const processCheckout = async (userId: string, idempotencyKey: string) =>
 
     await masterOrder.save({ session });
 
+    // Link snapshots to the order
+    for (const snap of snapshots) {
+      snap.orderId = masterOrder._id as mongoose.Types.ObjectId;
+      await snap.save({ session });
+    }
+
     // 5. Generate Child OrderItems
     const orderItems = [];
     for (const snap of snapshots) {

@@ -59,3 +59,46 @@ export const lockInventory = async (cartItems: ICartItem[], session: ClientSessi
 
   return snapshots;
 };
+
+export const releaseInventory = async (orderId: string, session: ClientSession) => {
+  const snapshots = await InventorySnapshot.find({ orderId, status: 'locked' }).session(session);
+  
+  for (const snap of snapshots) {
+    let Model: mongoose.Model<any>;
+    let availabilityField = '';
+
+    switch (snap.productType) {
+      case 'flight': Model = Flight; availabilityField = 'availableSeats'; break;
+      case 'hotel': Model = Hotel; availabilityField = 'availableRooms'; break;
+      case 'bus': Model = Bus; availabilityField = 'availableSeats'; break;
+      case 'tour': Model = Tour; availabilityField = 'availableSlots'; break;
+      default: continue;
+    }
+
+    // Determine quantity from the snapshot or order items. 
+    // Wait, the snapshot doesn't store quantity explicitly! We decremented it dynamically based on cart.items.
+    // We should fetch the OrderItem to get the quantity.
+    const OrderItemModel = mongoose.model('OrderItem');
+    const orderItem = await OrderItemModel.findOne({ orderId, productId: snap.productId }).session(session);
+    const quantity = orderItem ? orderItem.quantity : 1;
+
+    // Increment availability back
+    await Model.updateOne(
+      { _id: snap.productId },
+      { $inc: { [availabilityField]: quantity } },
+      { session }
+    );
+
+    snap.status = 'released';
+    await snap.save({ session });
+  }
+};
+
+export const confirmInventory = async (orderId: string, session: ClientSession) => {
+  await InventorySnapshot.updateMany(
+    { orderId, status: 'locked' },
+    { $set: { status: 'fulfilled' } },
+    { session }
+  );
+};
+
