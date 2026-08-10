@@ -115,3 +115,31 @@ export const confirmSupplierBooking = async (req: Request, res: Response, next: 
     next(error);
   }
 };
+
+export const getInventory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const supplier = await getSupplierForUser(req.user!.userId);
+    
+    // Fetch all types of inventory for this supplier
+    const [flights, hotels, buses, tours] = await Promise.all([
+      Flight.find({ supplierId: supplier._id }),
+      Hotel.find({ supplierId: supplier._id }),
+      Bus.find({ supplierId: supplier._id }),
+      Tour.find({ supplierId: supplier._id })
+    ]);
+
+    const inventory = [
+      ...flights.map(f => ({ ...f.toObject(), productType: 'flight' })),
+      ...hotels.map(h => ({ ...h.toObject(), productType: 'hotel' })),
+      ...buses.map(b => ({ ...b.toObject(), productType: 'bus' })),
+      ...tours.map(t => ({ ...t.toObject(), productType: 'tour' }))
+    ];
+
+    res.status(200).json({ inventory });
+  } catch (error: any) {
+    if (error.message === 'Supplier profile not found for this user') {
+      return res.status(404).json({ message: error.message });
+    }
+    next(error);
+  }
+};

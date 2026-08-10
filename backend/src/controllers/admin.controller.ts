@@ -96,3 +96,12 @@ export const getAnalytics = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+export const getSuppliers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const suppliers = await Supplier.find().populate('linkedUserId', 'firstName lastName email');
+    res.status(200).json({ suppliers });
+  } catch (error) {
+    next(error);
+  }
+};

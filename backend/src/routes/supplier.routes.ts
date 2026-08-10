@@ -5,7 +5,8 @@ import {
   createInventory,
   updateInventory,
   getSupplierBookings,
-  confirmSupplierBooking
+  confirmSupplierBooking,
+  getInventory
 } from '../controllers/supplier.controller';
 
 const router = Router();
@@ -15,6 +16,7 @@ router.use(requireAuth, requireRole([UserRole.Supplier]));
 
 router.post('/inventory', createInventory);
 router.put('/inventory/:productId', updateInventory);
+router.get('/inventory', getInventory);
 router.get('/bookings', getSupplierBookings);
 router.post('/bookings/:orderItemId/confirm', confirmSupplierBooking);
 
