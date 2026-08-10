@@ -20,6 +20,15 @@ export interface IUser extends Document {
   referralCode: string;
   referredBy?: mongoose.Types.ObjectId;
   hasCompletedFirstOrder: boolean;
+  currentChallenge?: string;
+  authenticators: Array<{
+    credentialID: string;
+    credentialPublicKey: string;
+    counter: number;
+    credentialDeviceType: string;
+    credentialBackedUp: boolean;
+    transports?: string[];
+  }>;
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
@@ -35,7 +44,18 @@ const UserSchema: Schema = new Schema({
   status: { type: String, enum: ['active', 'inactive', 'suspended'], default: 'active' },
   referralCode: { type: String, required: true, unique: true },
   referredBy: { type: Schema.Types.ObjectId, ref: 'User' },
-  hasCompletedFirstOrder: { type: Boolean, default: false }
+  hasCompletedFirstOrder: { type: Boolean, default: false },
+  
+  // WebAuthn Fields
+  currentChallenge: { type: String },
+  authenticators: [{
+    credentialID: { type: String, required: true },
+    credentialPublicKey: { type: String, required: true },
+    counter: { type: Number, required: true },
+    credentialDeviceType: { type: String, required: true },
+    credentialBackedUp: { type: Boolean, required: true },
+    transports: [{ type: String }]
+  }]
 }, { timestamps: true });
 
 UserSchema.pre('save', async function () {
