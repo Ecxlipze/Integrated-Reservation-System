@@ -9,9 +9,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Fingerprint, Wallet } from 'lucide-react';
 
-export function CheckoutFlow() {
+export function CheckoutFlow({ finalPrice }: { finalPrice?: number }) {
   const { token } = useAuthStore();
   const { getTotalPrice } = useCartStore();
+  const displayPrice = finalPrice !== undefined ? finalPrice : getTotalPrice();
   const [isProcessing, setIsProcessing] = useState(false);
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,7 +52,7 @@ export function CheckoutFlow() {
       <CardContent className="space-y-4">
         <div className="flex justify-between items-center py-4 border-b">
           <span className="text-muted-foreground">Total Amount</span>
-          <span className="text-2xl font-bold">${getTotalPrice()}</span>
+          <span className="text-2xl font-bold">${displayPrice}</span>
         </div>
 
         <div className="pt-4">
@@ -66,7 +67,7 @@ export function CheckoutFlow() {
               <DialogHeader>
                 <DialogTitle>Authorize Wallet Payment</DialogTitle>
                 <DialogDescription>
-                  Confirm your purchase of ${getTotalPrice()} using your biometric credentials.
+                  Confirm your purchase of ${displayPrice} using your biometric credentials.
                 </DialogDescription>
               </DialogHeader>
               

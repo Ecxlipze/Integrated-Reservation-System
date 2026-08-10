@@ -1,3 +1,5 @@
+import { CartDrawer } from '@/components/cart/CartDrawer';
+
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
@@ -6,6 +8,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <div className="font-bold text-xl tracking-tight">Antigravity Travel</div>
           <nav className="flex items-center gap-4">
             <a href="/login" className="text-sm font-medium hover:underline underline-offset-4">Sign In</a>
+            <CartDrawer />
           </nav>
         </div>
       </header>
