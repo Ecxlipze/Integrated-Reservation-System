@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Payment, PaymentStatus } from '../models/Payment';
-import { Order, OrderStatus } from '../models/Order';
+import { Order, OrderStatus, PaymentStatus as OrderPaymentStatus } from '../models/Order';
 import { OrderItem, OrderItemStatus } from '../models/OrderItem';
 import { WalletTransaction, TransactionType } from '../models/WalletTransaction';
 import { releaseInventory, confirmInventory } from './inventory.service';
@@ -81,7 +81,7 @@ export const confirmPayment = async (transactionId: string, success: boolean) =>
       await payment.save({ session });
 
       order.status = OrderStatus.Confirmed;
-      order.paymentStatus = 'paid' as any; // Cast as PaymentStatus string to avoid TS error
+      order.paymentStatus = OrderPaymentStatus.Captured;
       await order.save({ session });
 
       await OrderItem.updateMany(

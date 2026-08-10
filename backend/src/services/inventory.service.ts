@@ -27,7 +27,7 @@ export const lockInventory = async (cartItems: ICartItem[], session: ClientSessi
     const query = { _id: item.productId, [availabilityField]: { $gte: item.quantity } };
     const update = { $inc: { [availabilityField]: -item.quantity } };
     
-    const product = await Model.findOneAndUpdate(query, update, { session, new: true });
+    const product = await Model.findOneAndUpdate(query, update, { session, returnDocument: 'after' });
     
     if (!product) {
       throw new Error(`Insufficient inventory for ${item.productType} ID: ${item.productId}`);

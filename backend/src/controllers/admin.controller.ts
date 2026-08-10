@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Supplier } from '../models/Supplier';
-import { Order, OrderStatus } from '../models/Order';
+import { Order, OrderStatus, PaymentStatus } from '../models/Order';
 import { OrderItem } from '../models/OrderItem';
 import { WalletTransaction, TransactionType } from '../models/WalletTransaction';
 
@@ -28,7 +28,7 @@ export const getAnalytics = async (req: Request, res: Response, next: NextFuncti
     const gmvResult = await Order.aggregate([
       { 
         $match: { 
-          $or: [{ status: OrderStatus.Confirmed }, { paymentStatus: 'paid' }]
+          $or: [{ status: OrderStatus.Confirmed }, { paymentStatus: PaymentStatus.Captured }]
         } 
       },
       { 
