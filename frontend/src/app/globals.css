@@ -2,27 +2,25 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/*
+  Broadsheet — newsprint set for the web. Source Serif 4 on paper, cyan and
+  magenta process accents used small and deliberately, 2px radius, no boxes.
+  Values ported from the design system's styles.css; this file is the app's
+  single source of truth. Do not link the design system's stylesheet — its
+  token names (--color-accent, --space-4) do not meet Tailwind's.
+*/
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono);
   --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+
+  /* The 1.25x density scale — 5/10/15/20/30/40px lands on Tailwind's
+     1/2/3/4/6/8 steps from a 5px base. Use p-2, gap-4, gap-8. */
+  --spacing: 5px;
+
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -39,92 +37,187 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Tonal ramps — generated in OKLCH on one shared lightness scale, so the
+     same step of any role matches the others in visual value. Registered as
+     utilities: text-ink-700, bg-cyan-100, text-magenta-700. */
+  --color-ink-100: #f8f4f4;
+  --color-ink-200: #eae7e7;
+  --color-ink-300: #d7d3d3;
+  --color-ink-400: #bab6b6;
+  --color-ink-500: #9b9797;
+  --color-ink-600: #7d7979;
+  --color-ink-700: #605d5d;
+  --color-ink-800: #444141;
+  --color-ink-900: #2d2b2b;
+
+  --color-cyan-100: #e9f8ff;
+  --color-cyan-200: #cbeeff;
+  --color-cyan-300: #99e0ff;
+  --color-cyan-400: #62c5ee;
+  --color-cyan-500: #38a6cf;
+  --color-cyan-600: #1186ac;
+  --color-cyan-700: #006786;
+  --color-cyan-800: #004961;
+  --color-cyan-900: #0a303e;
+
+  --color-magenta-100: #fff1f4;
+  --color-magenta-200: #ffdee6;
+  --color-magenta-300: #ffc0d0;
+  --color-magenta-400: #ff90b1;
+  --color-magenta-500: #ff458e;
+  --color-magenta-600: #d82071;
+  --color-magenta-700: #aa0b56;
+  --color-magenta-800: #790e3d;
+  --color-magenta-900: #4b1528;
+
+  /* Print treatment only — never interface chrome. */
+  --color-process-yellow: #edbb00;
+
+  --radius-sm: 1px;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 4px;
+  --radius-4xl: 4px;
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #f3f2f2; /* paper */
+  --foreground: #201e1d; /* ink */
+  --card: #eae9e9; /* surface */
+  --card-foreground: #201e1d;
+  --popover: #eae9e9;
+  --popover-foreground: #201e1d;
+  --primary: #0088b0; /* cyan — all interactive */
+  --primary-foreground: #f3f2f2;
+  --secondary: #f8f4f4;
+  --secondary-foreground: #444141;
+  --muted: #eae7e7;
+  --muted-foreground: #605d5d;
+  --accent: #d6006c; /* magenta — rare second spot */
+  --accent-foreground: #f3f2f2;
+  --destructive: #aa0b56;
+  --border: color-mix(in srgb, #201e1d 16%, transparent);
+  --input: color-mix(in srgb, #201e1d 16%, transparent);
+  --ring: #0088b0;
+  --radius: 0.125rem; /* 2px */
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    font-size: 15px;
+    line-height: 1.55;
   }
   html {
     @apply font-sans;
+  }
+
+  /* The serif is the chrome — headings carry the display sizes the screens
+     set individually, so only the shared metrics live here. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+  }
+
+  /* Themed states everywhere, never browser defaults. */
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 2px solid #0088b0;
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: color-mix(in srgb, #0088b0 30%, transparent);
+  }
+}
+
+@layer components {
+  /* The newsprint dot screen, for interface imagery. Real photography is
+     outstanding; every image is a grey plate under this screen. */
+  .halftone {
+    position: relative;
+    overflow: hidden;
+    filter: grayscale(0.35) contrast(1.15);
+  }
+  .halftone::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.22) 30%,
+      transparent 32%
+    );
+    background-size: 3px 3px;
+    mix-blend-mode: multiply;
+  }
+
+  /*
+    The plate numeral — display figures set as misregistered process plates.
+    THREE plates (C, M, Y; no black): the dark core is the C x M x Y multiply
+    overlap, the fringes are registration drift. Offsets are em-scaled, so it
+    works at any size. --press-nx/--press-ny are the pointer lean, published
+    by the design system's print-plates.js; that file is not part of this app,
+    so they stay 0 and the plates render statically. That is the intended
+    fallback. See <PlateNumeral>.
+  */
+  .cmyk-num {
+    --cmyk-num-ground: var(--background);
+    position: relative;
+    width: fit-content;
+    line-height: 0.9;
+    font-feature-settings: "pnum" 1;
+    background: var(--cmyk-num-ground);
+    padding: 0.12em;
+    margin: -0.12em;
+  }
+  .cmyk-num .paper {
+    color: var(--background);
+    text-shadow:
+      0.036em 0.025em 0 var(--background),
+      -0.031em -0.023em 0 var(--background);
+  }
+  .cmyk-num .plate {
+    position: absolute;
+    inset: 0.12em;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    user-select: none;
+    /* The host trims to its cap box; each absolute plate must trim its own
+       line the same way or its glyphs sit a half-leading low. Chromium-only;
+       elsewhere the plates sit slightly low, which is acceptable. */
+    text-box: trim-both cap alphabetic;
+  }
+  .cmyk-num .plate-c {
+    color: #0088b0;
+  }
+  .cmyk-num .plate-m {
+    color: #d6006c;
+    translate: calc(0.036em + 0.018em * var(--press-nx, 0))
+      calc(0.025em + 0.0125em * var(--press-ny, 0));
+  }
+  .cmyk-num .plate-y {
+    color: var(--color-process-yellow);
+    translate: calc(-0.031em + 0.018em * var(--press-nx, 0))
+      calc(-0.023em + 0.0125em * var(--press-ny, 0));
   }
 }

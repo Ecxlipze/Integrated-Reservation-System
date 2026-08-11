@@ -2,25 +2,41 @@
 
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, Trash2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { useState, useEffect } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 
+// The cart persists to localStorage, so its contents only exist on the client.
+// Subscribing to a constant server snapshot keeps the first client render
+// identical to the server's, then swaps in the real count after hydration —
+// without the setState-in-effect that a `mounted` flag needs.
+const emptySnapshot = () => false;
+const clientSnapshot = () => true;
+const noopSubscribe = () => () => {};
+
+function useHydrated() {
+  return useSyncExternalStore(noopSubscribe, clientSnapshot, emptySnapshot);
+}
+
+/**
+ * The cart drawer, opened from the masthead's "Cart (n)". The trigger is text,
+ * not an icon button — the redesign is near-iconless by intent.
+ */
 export function CartDrawer() {
   const router = useRouter();
-  const { items, removeItem, getTotalPrice, clearCart } = useCartStore();
-  const [mounted, setMounted] = useState(false);
+  const { items, removeItem, getTotalPrice } = useCartStore();
+  const hydrated = useHydrated();
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
+  const count = hydrated ? items.length : 0;
 
   const handleCheckout = () => {
     setIsOpen(false);
@@ -29,67 +45,82 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger render={
-        <Button variant="outline" size="icon" className="relative">
-          <ShoppingCart className="h-5 w-5" />
-          {items.length > 0 && (
-            <Badge variant="destructive" className="absolute -top-2 -right-2 px-1.5 py-0.5 text-xs rounded-full">
-              {items.length}
-            </Badge>
-          )}
-        </Button>
-      } />
-      
-      <SheetContent className="flex flex-col w-full sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>Your Cart</SheetTitle>
-          <SheetDescription>
-            Review your selected reservations before proceeding to checkout.
+      <SheetTrigger
+        render={
+          <button className="cursor-pointer border-0 bg-transparent p-0 font-sans text-sm text-primary">
+            Cart ({count})
+          </button>
+        }
+      />
+
+      <SheetContent className="flex flex-col gap-0 p-[26px]">
+        <SheetHeader className="gap-0 p-0">
+          <SheetTitle className="text-[26px] leading-tight font-semibold">
+            Your cart
+          </SheetTitle>
+          <SheetDescription className="mb-[18px] text-[13.5px] text-ink-700">
+            Held for 20 minutes. Rates are not guaranteed after that.
           </SheetDescription>
         </SheetHeader>
-        
-        <div className="flex-1 overflow-hidden mt-6 flex flex-col">
-          <ScrollArea className="flex-1 pr-4">
-            {items.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-muted-foreground pt-12">
-                <ShoppingCart className="h-12 w-12 mb-4 opacity-20" />
-                <p>Your cart is empty.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {items.map((item) => (
-                  <div key={item.productId} className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <p className="font-medium leading-none capitalize">{item.productType}</p>
-                      <p className="text-sm text-muted-foreground">ID: {item.productId.substring(0, 8)}...</p>
-                      <p className="text-sm font-semibold">${item.price} x {item.quantity}</p>
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => removeItem(item.productId)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+
+        <div className="h-px bg-border" role="presentation" />
+
+        <ScrollArea className="flex-1">
+          {count === 0 ? (
+            // Empty state is one line — no icon.
+            <p className="pt-7 text-[15px] text-ink-600">Nothing reserved yet.</p>
+          ) : (
+            items.map((item) => (
+              <div
+                key={item.productId}
+                className="flex justify-between gap-3 border-b border-[color-mix(in_srgb,var(--foreground)_12%,transparent)] py-4"
+              >
+                <div>
+                  <div className="text-[17px] font-semibold capitalize">
+                    {item.productType}
                   </div>
-                ))}
+                  <div className="text-[13px] text-ink-600">
+                    {item.bookingDates
+                      ? `${item.bookingDates.checkIn} – ${item.bookingDates.checkOut}`
+                      : `Ref ${item.productId.substring(0, 8)}`}
+                    {item.quantity > 1 ? ` · ${item.quantity} rooms` : null}
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="-ml-[5px] mt-1 px-[5px]"
+                    onClick={() => removeItem(item.productId)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+                <div className="text-[18px] font-semibold whitespace-nowrap">
+                  ${item.price * item.quantity}
+                </div>
               </div>
-            )}
-          </ScrollArea>
+            ))
+          )}
+        </ScrollArea>
+
+        <div className="mb-[14px] h-px bg-border" role="presentation" />
+        <div className="mb-[14px] flex items-baseline justify-between">
+          <span className="text-[15px]">Total</span>
+          <span className="text-[30px] font-semibold">${getTotalPrice()}</span>
         </div>
-        
-        <div className="pt-6">
-          <Separator className="mb-4" />
-          <div className="flex justify-between font-bold text-lg mb-6">
-            <span>Total</span>
-            <span>${getTotalPrice()}</span>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" onClick={clearCart} disabled={items.length === 0}>
-              Clear Cart
-            </Button>
-            <Button onClick={handleCheckout} disabled={items.length === 0}>
-              Checkout
-            </Button>
-          </div>
-        </div>
+        <Button
+          className="w-full"
+          onClick={handleCheckout}
+          disabled={count === 0}
+        >
+          Checkout
+        </Button>
+        <Button
+          variant="secondary"
+          className="mt-2 w-full"
+          onClick={() => setIsOpen(false)}
+        >
+          Keep looking
+        </Button>
       </SheetContent>
     </Sheet>
   );

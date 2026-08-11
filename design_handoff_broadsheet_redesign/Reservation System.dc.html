@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/broadsheet-1eaf782f-6f6b-4a20-a11c-9e5ffc0d9c44/styles.css">
+<script src="_ds/broadsheet-1eaf782f-6f6b-4a20-a11c-9e5ffc0d9c44/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#d8d6d1}
+a{color:#0088b0;text-decoration:none}
+a:hover{color:#006786}
+[data-shad] h1,[data-shad] h2,[data-shad] h3,[data-shad] h4{font-family:inherit}
+[data-shad] *,[data-shad] *::before,[data-shad] *::after{box-sizing:border-box}
+</style>
+</helmet>
+
+<div style="min-height:100vh;font-family:'Source Serif 4',Georgia,serif;color:#201e1d">
+
+  <div style="position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:10px 20px;background:#201e1d;color:#f3f2f2">
+    <div style="font-weight:600;font-size:15px;letter-spacing:.01em">Almanac Travel <span style="opacity:.55;font-weight:400">· UI mockups</span></div>
+
+    <div style="display:flex;border:1px solid rgba(243,242,242,.3);border-radius:2px;overflow:hidden">
+      <button onClick="{{ setBuilt }}" style="{{ tabBuilt }}">As built</button>
+      <button onClick="{{ setNew }}" style="{{ tabNew }}">Almanac</button>
+    </div>
+
+    <div style="display:flex;border:1px solid rgba(243,242,242,.3);border-radius:2px;overflow:hidden">
+      <button onClick="{{ setDesktop }}" style="{{ tabDesktop }}">Desktop</button>
+      <button onClick="{{ setMobile }}" style="{{ tabMobile }}">Mobile</button>
+    </div>
+
+    <nav style="display:flex;flex-wrap:wrap;gap:2px;margin-left:auto">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="9">
+        <button onClick="{{ item.go }}" style="{{ item.style }}">{{ item.label }}</button>
+      </sc-for>
+    </nav>
+  </div>
+
+  <div style="display:flex;justify-content:center;padding:28px 20px 60px">
+    <div style="{{ frameStyle }}">
+
+      <!-- ============ AS BUILT ============ -->
+      <sc-if value="{{ builtSearch }}" hint-placeholder-val="{{ true }}">
+        <div data-shad style="font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:oklch(1 0 0);color:oklch(0.145 0 0);min-height:640px;display:flex;flex-direction:column">
+          <header style="position:sticky;top:0;z-index:50;width:100%;border-bottom:1px solid oklch(0.922 0 0);background:rgba(255,255,255,.6);backdrop-filter:blur(8px)">
+            <div style="{{ twContainer }};display:flex;height:64px;align-items:center;justify-content:space-between">
+              <div style="font-weight:700;font-size:20px;letter-spacing:-0.025em">Antigravity Travel</div>
+              <nav style="display:flex;align-items:center;gap:16px">
+                <a href="#login" style="font-size:14px;font-weight:500;white-space:nowrap;color:oklch(0.145 0 0)">Sign In</a>
+                <button onClick="{{ openDrawer }}" style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid oklch(0.922 0 0);border-radius:10px;background:oklch(1 0 0);cursor:pointer">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                  <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ false }}">
+                    <span style="position:absolute;top:-8px;right:-8px;display:inline-flex;align-items:center;justify-content:center;height:20px;padding:2px 6px;border-radius:9999px;background:color-mix(in oklch,oklch(0.577 0.245 27.325) 10%,transparent);color:oklch(0.577 0.245 27.325);font-size:12px;font-weight:500">{{ cartCount }}</span>
+                  </sc-if>
+                </button>
+              </nav>
+            </div>
+          </header>
+
+          <main style="flex:1">
+            <div style="{{ twContainer }};padding:32px 0;display:flex;gap:32px;flex-wrap:wrap">
+              <aside style="width:256px;flex:none">
+                <h2 style="font-size:20px;font-weight:700;margin:0 0 16px">Filters</h2>
+                <div style="display:flex;flex-direction:column;gap:16px">
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <label style="font-size:14px;font-weight:500">Category</label>
+                    <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;border:1px solid oklch(0.922 0 0);border-radius:10px;font-size:14px">Hotels <span style="opacity:.5">⌄</span></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <label style="font-size:14px;font-weight:500">Min Price</label>
+                    <input placeholder="0" style="height:32px;padding:4px 10px;border:1px solid oklch(0.922 0 0);border-radius:10px;font-size:14px;font-family:inherit;background:transparent">
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <label style="font-size:14px;font-weight:500">Max Price</label>
+                    <input placeholder="1000" style="height:32px;padding:4px 10px;border:1px solid oklch(0.922 0 0);border-radius:10px;font-size:14px;font-family:inherit;background:transparent">
+                  </div>
+                  <button style="display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;width:100%;border:0;border-radius:10px;background:oklch(0.205 0 0);color:oklch(0.985 0 0);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                    Apply Filters
+                  </button>
+                </div>
+              </aside>
+
+              <main style="flex:1;min-width:280px">
+                <h1 style="font-size:30px;font-weight:700;letter-spacing:-0.025em;margin:0 0 24px">Search Results</h1>
+                <div style="display:grid;grid-template-columns:{{ builtGridCols }};gap:24px">
+                  <sc-for list="{{ hotels }}" as="h" hint-placeholder-count="6">
+                    <div onClick="{{ h.open }}" style="display:flex;flex-direction:column;gap:16px;overflow:hidden;border-radius:14px;background:oklch(1 0 0);padding-bottom:16px;font-size:14px;box-shadow:0 0 0 1px color-mix(in oklch,oklch(0.145 0 0) 10%,transparent);cursor:pointer">
+                      <div style="height:192px;background:oklch(0.97 0 0);display:flex;align-items:center;justify-content:center">
+                        <span style="color:oklch(0.556 0 0)">Image Placeholder</span>
+                      </div>
+                      <div style="padding:0 16px;display:grid;gap:4px">
+                        <div style="min-width:0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+                          <div style="min-width:0;font-size:20px;line-height:1.375;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.name }}</div>
+                          <span style="flex:none;display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:26px;background:oklch(0.97 0 0);color:oklch(0.205 0 0);font-size:12px;font-weight:500;white-space:nowrap">${{ h.price }}</span>
+                        </div>
+                        <div style="font-size:14px;color:oklch(0.556 0 0)">{{ h.place }}</div>
+                      </div>
+                      <div style="padding:0 16px">
+                        <button style="width:100%;height:32px;border:1px solid oklch(0.922 0 0);border-radius:10px;background:oklch(1 0 0);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer">View Details</button>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </main>
+            </div>
+          </main>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ builtProduct }}" hint-placeholder-val="{{ false }}">
+        <div data-shad style="font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:oklch(1 0 0);color:oklch(0.145 0 0);min-height:640px">
+          <header style="width:100%;border-bottom:1px solid oklch(0.922 0 0)">
+            <div style="{{ twContainer }};display:flex;height:64px;align-items:center;justify-content:space-between">
+              <div style="font-weight:700;font-size:20px;letter-spacing:-0.025em">Antigravity Travel</div>
+              <nav style="display:flex;align-items:center;gap:16px">
+                <a href="#login" style="font-size:14px;font-weight:500;white-space:nowrap;color:oklch(0.145 0 0)">Sign In</a>
+                <button onClick="{{ openDrawer }}" style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid oklch(0.922 0 0);border-radius:10px;background:oklch(1 0 0);cursor:pointer">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                </button>
+              </nav>
+            </div>
+          </header>
+          <div style="max-width:896px;margin:0 auto;padding:32px 16px">
+            <button onClick="{{ goSearch }}" style="display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;margin:0 0 24px -16px;border:0;border-radius:10px;background:transparent;color:oklch(0.556 0 0);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg> Back
+            </button>
+            <div style="display:grid;grid-template-columns:{{ builtTwoCol }};gap:32px">
+              <div style="height:384px;background:oklch(0.97 0 0);border-radius:14px;display:flex;align-items:center;justify-content:center">
+                <span style="color:oklch(0.556 0 0)">Main Image Placeholder</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:24px">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+                    <h1 style="font-size:30px;font-weight:700;margin:0">{{ product.name }}</h1>
+                    <span style="display:inline-flex;align-items:center;padding:4px 8px;border-radius:26px;background:oklch(0.205 0 0);color:oklch(0.985 0 0);font-size:18px;font-weight:500;white-space:nowrap">${{ product.price }}</span>
+                  </div>
+                  <p style="color:oklch(0.556 0 0);font-size:18px;margin:0">{{ product.place }}</p>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:16px;overflow:hidden;border-radius:14px;background:oklch(1 0 0);padding:16px 0;font-size:14px;box-shadow:0 0 0 1px color-mix(in oklch,oklch(0.145 0 0) 10%,transparent)">
+                  <div style="padding:0 16px;font-size:16px;font-weight:500;line-height:1.375">Details</div>
+                  <div style="padding:0 16px;display:flex;flex-direction:column;gap:16px">
+                    <div style="display:flex;justify-content:space-between;border-bottom:1px solid oklch(0.922 0 0);padding-bottom:8px">
+                      <span style="color:oklch(0.556 0 0)">Available Rooms</span><span style="font-weight:500">{{ product.rooms }}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;gap:24px;border-bottom:1px solid oklch(0.922 0 0);padding-bottom:8px">
+                      <span style="color:oklch(0.556 0 0)">Amenities</span><span style="font-weight:500;text-align:right">{{ product.amenityLine }}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding-top:8px">
+                      <span style="color:oklch(0.556 0 0)">Supplier</span><span style="font-weight:500">{{ product.supplier }}</span>
+                    </div>
+                  </div>
+                </div>
+                <button onClick="{{ addToCart }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border:0;border-radius:10px;background:oklch(0.205 0 0);color:oklch(0.985 0 0);font-size:18px;font-weight:500;font-family:inherit;cursor:pointer">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ builtCheckout }}" hint-placeholder-val="{{ false }}">
+        <div data-shad style="font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:oklch(0.985 0.001 106)/* bg-gray-50 */;color:oklch(0.145 0 0);min-height:640px">
+          <header style="width:100%;border-bottom:1px solid oklch(0.922 0 0);background:rgba(255,255,255,.6);backdrop-filter:blur(8px)">
+            <div style="{{ twContainer }};display:flex;height:56px;align-items:center">
+              <h2 style="font-size:18px;font-weight:600;margin:0">Customer Dashboard</h2>
+            </div>
+          </header>
+          <div style="max-width:1024px;margin:0 auto;padding:32px 16px">
+            <h1 style="font-size:30px;font-weight:700;letter-spacing:-0.025em;margin:0 0 32px">Checkout</h1>
+            <div style="display:grid;grid-template-columns:{{ builtTwoCol }};gap:32px">
+              <div style="display:flex;flex-direction:column;gap:16px;overflow:hidden;border-radius:14px;background:oklch(1 0 0);padding:16px 0;font-size:14px;box-shadow:0 0 0 1px color-mix(in oklch,oklch(0.145 0 0) 10%,transparent);align-self:flex-start">
+                <div style="padding:0 16px;display:grid;gap:4px">
+                  <div style="font-size:16px;font-weight:500">Order Summary</div>
+                  <div style="color:oklch(0.556 0 0)">{{ cartCount }} items in your cart</div>
+                </div>
+                <div style="padding:0 16px;display:flex;flex-direction:column;gap:16px">
+                  <sc-for list="{{ cart }}" as="c" hint-placeholder-count="1">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                      <div>
+                        <p style="font-weight:500;margin:0;text-transform:capitalize">{{ c.type }}</p>
+                        <p style="color:oklch(0.556 0 0);margin:0">ID: {{ c.shortId }}...</p>
+                      </div>
+                      <p style="font-weight:600;margin:0">${{ c.price }} x {{ c.qty }}</p>
+                    </div>
+                  </sc-for>
+                  <div style="height:1px;background:oklch(0.922 0 0)"></div>
+                  <div style="display:flex;gap:8px">
+                    <input placeholder="Promo Code" value="{{ coupon }}" onChange="{{ setCoupon }}" style="flex:1;height:32px;padding:4px 10px;border:1px solid oklch(0.922 0 0);border-radius:10px;font-size:14px;font-family:inherit;background:transparent">
+                    <button onClick="{{ applyCoupon }}" style="height:32px;padding:0 10px;border:0;border-radius:10px;background:oklch(0.97 0 0);color:oklch(0.205 0 0);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer">Apply</button>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px;padding-top:16px">
+                    <div style="display:flex;justify-content:space-between"><span style="color:oklch(0.556 0 0)">Subtotal</span><span>${{ subtotal }}</span></div>
+                    <sc-if value="{{ hasDiscount }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;justify-content:space-between;color:oklch(0.627 0.194 149.214);font-weight:500">
+                        <span style="display:flex;align-items:center;gap:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m20.59 13.41-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"></circle></svg> Discount</span>
+                        <span>-${{ discount }}</span>
+                      </div>
+                    </sc-if>
+                    <div style="height:1px;background:oklch(0.922 0 0)"></div>
+                    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:18px"><span>Total</span><span>${{ total }}</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div style="max-width:448px;margin:0 auto;display:flex;flex-direction:column;gap:16px;overflow:hidden;border-radius:14px;background:oklch(1 0 0);padding:16px 0;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.08),0 0 0 1px color-mix(in oklch,oklch(0.205 0 0) 20%,transparent)">
+                  <div style="padding:0 16px;display:grid;gap:4px">
+                    <div style="font-size:24px;font-weight:500;line-height:1.375">Checkout</div>
+                    <div style="color:oklch(0.556 0 0)">Securely complete your reservation.</div>
+                  </div>
+                  <div style="padding:0 16px;display:flex;flex-direction:column;gap:16px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid oklch(0.922 0 0)">
+                      <span style="color:oklch(0.556 0 0)">Total Amount</span>
+                      <span style="font-size:24px;font-weight:700">${{ total }}</span>
+                    </div>
+                    <div style="padding-top:16px">
+                      <button onClick="{{ openPay }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;height:36px;border:0;border-radius:10px;background:oklch(0.205 0 0);color:oklch(0.985 0 0);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg>
+                        Pay with Wallet
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <sc-if value="{{ payOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.5);z-index:60">
+              <div style="width:min(448px,100%);background:oklch(1 0 0);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:0 24px 60px rgba(0,0,0,.25)">
+                <div style="display:grid;gap:4px">
+                  <div style="font-size:18px;font-weight:600">Authorize Wallet Payment</div>
+                  <div style="font-size:14px;color:oklch(0.556 0 0)">Confirm your purchase of ${{ total }} using your biometric credentials.</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 0;gap:16px">
+                  <div style="padding:16px;border-radius:9999px;background:color-mix(in oklch,oklch(0.205 0 0) 10%,transparent);color:oklch(0.205 0 0)">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path><path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path><path d="M2 12a10 10 0 0 1 18-6"></path><path d="M2 16h.01"></path><path d="M21.8 16c.2-2 .131-5.354 0-6"></path><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"></path><path d="M8.65 22c.21-.66.45-1.32.57-2"></path><path d="M9 6.8a6 6 0 0 1 9 5.2v2"></path></svg>
+                  </div>
+                  <sc-if value="{{ paySuccess }}" hint-placeholder-val="{{ false }}">
+                    <p style="font-size:14px;color:oklch(0.723 0.219 149.579);font-weight:500;margin:0">Payment Successful!</p>
+                  </sc-if>
+                </div>
+                <div style="display:flex">
+                  <button onClick="{{ authorize }}" style="width:100%;height:32px;border:0;border-radius:10px;background:oklch(0.205 0 0);color:oklch(0.985 0 0);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer">{{ payLabel }}</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ builtSupplier }}" hint-placeholder-val="{{ false }}">
+        <div data-shad style="font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:#f8fafc;color:oklch(0.145 0 0);min-height:640px">
+          <header style="width:100%;border-bottom:1px solid oklch(0.922 0 0);background:rgba(255,255,255,.6);backdrop-filter:blur(8px)">
+            <div style="{{ twContainer }};display:flex;height:56px;align-items:center">
+              <h2 style="font-size:18px;font-weight:600;margin:0;color:#2b7fff">Supplier Panel</h2>
+            </div>
+          </header>
+          <div style="{{ twContainer }};padding:24px 0;display:flex;flex-direction:column;gap:24px">
+            <h1 style="font-size:30px;font-weight:700;letter-spacing:-0.025em;margin:0">Supplier Operations</h1>
+            <div style="display:grid;grid-template-columns:1fr 1fr;width:400px;max-width:100%;gap:4px;padding:3px;border-radius:10px;background:oklch(0.97 0 0)">
+              <button onClick="{{ supInv }}" style="{{ supTabInvStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg> Inventory</button>
+              <button onClick="{{ supBook }}" style="{{ supTabBookStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg> Booking Queue</button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:16px;overflow:hidden;border-radius:14px;background:oklch(1 0 0);padding:16px 0;font-size:14px;box-shadow:0 0 0 1px color-mix(in oklch,oklch(0.145 0 0) 10%,transparent)">
+              <div style="padding:0 16px;display:grid;gap:4px">
+                <div style="font-size:16px;font-weight:500">{{ supTitle }}</div>
+                <div style="color:oklch(0.556 0 0)">{{ supDesc }}</div>
+              </div>
+              <div style="padding:0 16px;overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:14px">
+                  <thead>
+                    <tr>
+                      <sc-for list="{{ supHeads }}" as="hd" hint-placeholder-count="5">
+                        <th style="text-align:left;padding:8px;color:oklch(0.556 0 0);font-weight:500;border-bottom:1px solid oklch(0.922 0 0);white-space:nowrap">{{ hd }}</th>
+                      </sc-for>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ supRows }}" as="r" hint-placeholder-count="4">
+                      <tr>
+                        <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0);font-family:ui-monospace,monospace;font-size:12px">{{ r.id }}</td>
+                        <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0);text-transform:capitalize">{{ r.type }}</td>
+                        <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0)">{{ r.detail }}</td>
+                        <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0)">{{ r.amount }}</td>
+                        <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0)">
+                          <span style="{{ r.badgeStyle }}">{{ r.status }}</span>
+                        </td>
+                        <sc-if value="{{ supShowAction }}" hint-placeholder-val="{{ false }}">
+                          <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0)">
+                            <button style="display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border:0;border-radius:10px;background:oklch(0.205 0 0);color:oklch(0.985 0 0);font-size:12.8px;font-weight:500;font-family:inherit;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg> Confirm</button>
+                          </td>
+                        </sc-if>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ builtAdmin }}" hint-placeholder-val="{{ false }}">
+        <div data-shad style="font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:#f4f4f5;color:oklch(0.145 0 0);min-height:640px">
+          <header style="width:100%;border-bottom:1px solid oklch(0.922 0 0);background:rgba(255,255,255,.6);backdrop-filter:blur(8px)">
+            <div style="{{ twContainer }};display:flex;height:56px;align-items:center">
+              <h2 style="font-size:18px;font-weight:600;margin:0;color:oklch(0.205 0 0)">Admin Console</h2>
+            </div>
+          </header>
+          <div style="{{ twContainer }};padding:24px 0;display:flex;flex-direction:column;gap:24px">
+            <h1 style="font-size:30px;font-weight:700;letter-spacing:-0.025em;margin:0">Admin Console</h1>
+            <div style="display:grid;grid-template-columns:1fr 1fr;width:400px;max-width:100%;gap:4px;padding:3px;border-radius:10px;background:oklch(0.97 0 0)">
+              <button onClick="{{ admAnalytics }}" style="{{ admTabAnaStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="m19 9-5 5-4-4-3 3"></path></svg> Analytics</button>
+              <button onClick="{{ admSuppliers }}" style="{{ admTabSupStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Suppliers</button>
+            </div>
+
+            <sc-if value="{{ admIsAnalytics }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:24px">
+                <div style="display:grid;grid-template-columns:{{ builtThreeCol }};gap:24px">
+                  <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="3">
+                    <div style="display:flex;flex-direction:column;gap:16px;overflow:hidden;border-radius:14px;background:oklch(1 0 0);padding:16px 0;font-size:14px;box-shadow:0 0 0 1px color-mix(in oklch,oklch(0.145 0 0) 10%,transparent)">
+                      <div style="padding:0 16px;font-size:14px;font-weight:500;color:oklch(0.556 0 0)">{{ k.label }}</div>
+                      <div style="padding:0 16px">
+                        <div style="font-size:30px;font-weight:700">{{ k.value }}</div>
+                        <p style="font-size:12px;color:oklch(0.556 0 0);margin:4px 0 0">{{ k.note }}</p>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:16px;overflow:hidden;border-radius:14px;background:oklch(1 0 0);padding:16px 0;font-size:14px;box-shadow:0 0 0 1px color-mix(in oklch,oklch(0.145 0 0) 10%,transparent)">
+                  <div style="padding:0 16px;display:grid;gap:4px">
+                    <div style="font-size:16px;font-weight:500">Supplier Booking Overview</div>
+                    <div style="color:oklch(0.556 0 0)">Total bookings confirmed per supplier</div>
+                  </div>
+                  <div style="padding:0 16px">
+                    <table style="width:100%;border-collapse:collapse;font-size:14px">
+                      <thead><tr>
+                        <th style="text-align:left;padding:8px;color:oklch(0.556 0 0);font-weight:500;border-bottom:1px solid oklch(0.922 0 0)">Supplier Name</th>
+                        <th style="text-align:left;padding:8px;color:oklch(0.556 0 0);font-weight:500;border-bottom:1px solid oklch(0.922 0 0)">Total Bookings</th>
+                      </tr></thead>
+                      <tbody>
+                        <sc-for list="{{ supplierBookings }}" as="sb" hint-placeholder-count="4">
+                          <tr>
+                            <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0);font-weight:500">{{ sb.name }}</td>
+                            <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0)">{{ sb.total }}</td>
+                          </tr>
+                        </sc-for>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ admIsSuppliers }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:16px;overflow:hidden;border-radius:14px;background:oklch(1 0 0);padding:16px 0;font-size:14px;box-shadow:0 0 0 1px color-mix(in oklch,oklch(0.145 0 0) 10%,transparent)">
+                <div style="padding:0 16px;display:grid;gap:4px">
+                  <div style="font-size:16px;font-weight:500">Supplier Approvals</div>
+                  <div style="color:oklch(0.556 0 0)">Manage supplier registrations and statuses.</div>
+                </div>
+                <div style="padding:0 16px;overflow-x:auto">
+                  <table style="width:100%;border-collapse:collapse;font-size:14px">
+                    <thead><tr>
+                      <th style="text-align:left;padding:8px;color:oklch(0.556 0 0);font-weight:500;border-bottom:1px solid oklch(0.922 0 0)">Name</th>
+                      <th style="text-align:left;padding:8px;color:oklch(0.556 0 0);font-weight:500;border-bottom:1px solid oklch(0.922 0 0)">Company</th>
+                      <th style="text-align:left;padding:8px;color:oklch(0.556 0 0);font-weight:500;border-bottom:1px solid oklch(0.922 0 0)">Status</th>
+                      <th style="text-align:left;padding:8px;color:oklch(0.556 0 0);font-weight:500;border-bottom:1px solid oklch(0.922 0 0)">Action</th>
+                    </tr></thead>
+                    <tbody>
+                      <sc-for list="{{ suppliers }}" as="s" hint-placeholder-count="4">
+                        <tr>
+                          <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0);font-weight:500">{{ s.name }}</td>
+                          <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0)">{{ s.reg }}</td>
+                          <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0)"><span style="{{ s.badgeStyle }}">{{ s.status }}</span></td>
+                          <td style="padding:8px;border-bottom:1px solid oklch(0.922 0 0)">{{ s.action }}</td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ builtGap }}" hint-placeholder-val="{{ false }}">
+        <div data-shad style="font-family:Geist,ui-sans-serif,system-ui,sans-serif;background:oklch(1 0 0);min-height:420px;display:flex;align-items:center;justify-content:center;padding:60px">
+          <div style="max-width:420px;text-align:center;color:oklch(0.556 0 0);font-size:14px;line-height:1.6">
+            <div style="font-size:16px;font-weight:600;color:oklch(0.145 0 0);margin-bottom:8px">{{ gapTitle }}</div>
+            This screen does not exist in the repository yet — there is nothing to recreate. Switch to <strong style="color:oklch(0.145 0 0)">Almanac</strong> to see the proposed design.
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ ALMANAC ============ -->
+      <sc-if value="{{ isNew }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#f3f2f2;color:#201e1d;min-height:700px;font-family:'Source Serif 4',Georgia,serif">
+
+          <div style="{{ newPad }}">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:12px">
+              <div style="font-size:34px;font-weight:600;line-height:1;letter-spacing:-0.01em">Almanac Travel</div>
+              <div style="display:flex;align-items:center;gap:18px;font-size:14px">
+                <a href="#signin" onClick="{{ goAuth }}">Sign in</a>
+                <button onClick="{{ openDrawer }}" style="border:0;background:none;font:inherit;font-size:14px;color:#0088b0;cursor:pointer;padding:0">Cart ({{ cartCount }})</button>
+              </div>
+            </div>
+            <div style="height:3px;background:#201e1d"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:7px 0;font-size:11.5px;letter-spacing:0.09em;text-transform:uppercase;color:#605d5d">
+              <span>Tuesday, 11 August 2026</span>
+              <span>Flights · Bus · Hotels · Hostels · Tours</span>
+              <span>Est. 2026 · No. 118</span>
+            </div>
+            <div style="height:1px;background:#201e1d"></div>
+
+            <nav style="display:flex;flex-wrap:wrap;gap:22px;padding:12px 0 0;font-size:14px">
+              <sc-for list="{{ newNav }}" as="n" hint-placeholder-count="6">
+                <a href="#nav" onClick="{{ n.go }}" style="{{ n.style }}">{{ n.label }}</a>
+              </sc-for>
+            </nav>
+          </div>
+
+          <!-- SEARCH -->
+          <sc-if value="{{ newSearch }}" hint-placeholder-val="{{ true }}">
+            <div style="{{ newPad }}">
+              <div style="display:grid;grid-template-columns:{{ newSidebarCols }};gap:40px;padding-top:30px">
+                <aside style="display:flex;flex-direction:column;gap:20px">
+                  <div style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#0088b0">Refine</div>
+                  <div class="field"><label>Destination</label><input class="input" value="Lisbon, Portugal"></div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                    <div class="field"><label>Check in</label><input class="input" value="14 Sep"></div>
+                    <div class="field"><label>Check out</label><input class="input" value="18 Sep"></div>
+                  </div>
+                  <div class="field"><label>Guests</label><input class="input" value="2 adults, 1 room"></div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                    <div class="field"><label>Min price</label><input class="input" placeholder="0"></div>
+                    <div class="field"><label>Max price</label><input class="input" placeholder="400"></div>
+                  </div>
+                  <div>
+                    <div style="font-size:12px;color:#605d5d;margin-bottom:8px">Board</div>
+                    <div style="display:flex;flex-direction:column;gap:7px">
+                      <label class="radio"><input type="radio" name="board" checked><span class="dot"></span>Any</label>
+                      <label class="radio"><input type="radio" name="board"><span class="dot"></span>Breakfast included</label>
+                      <label class="radio"><input type="radio" name="board"><span class="dot"></span>Free cancellation</label>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary btn-block">Apply</button>
+                </aside>
+
+                <main>
+                  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:6px">
+                    <h1 style="font-size:44px;line-height:1.02;margin:0;letter-spacing:-0.015em">Hotels in Lisbon</h1>
+                    <div class="seg">
+                      <label class="seg-opt"><input type="radio" name="sort" checked>Recommended</label>
+                      <label class="seg-opt"><input type="radio" name="sort">Price</label>
+                      <label class="seg-opt"><input type="radio" name="sort">Rating</label>
+                    </div>
+                  </div>
+                  <p style="font-size:15px;color:#605d5d;margin:0 0 26px">Six properties, 14–18 September, two adults. Prices are per night including tax.</p>
+
+                  <sc-for list="{{ hotels }}" as="h" hint-placeholder-count="6">
+                    <article onClick="{{ h.open }}" style="display:grid;grid-template-columns:{{ newRowCols }};gap:22px;padding:22px 0;border-top:1px solid rgba(32,30,29,.16);cursor:pointer">
+                      <div class="halftone" style="background:#c9c7c2;height:130px;display:flex;align-items:flex-end;padding:8px">
+                        <span style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#605d5d">Plate</span>
+                      </div>
+                      <div>
+                        <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+                          <h2 style="font-size:26px;margin:0;line-height:1.1">{{ h.name }}</h2>
+                          <span style="font-size:13px;color:#0088b0">{{ h.rating }}</span>
+                          <span style="font-size:13px;color:#7d7979">{{ h.reviews }} reviews</span>
+                        </div>
+                        <div style="font-style:italic;font-size:15px;color:#605d5d;margin-top:2px">{{ h.place }}</div>
+                        <p style="font-size:14.5px;line-height:1.5;margin:10px 0 10px;max-width:52ch;text-wrap:pretty">{{ h.blurb }}</p>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px">
+                          <sc-for list="{{ h.amenities }}" as="a" hint-placeholder-count="3">
+                            <span class="tag tag-neutral">{{ a }}</span>
+                          </sc-for>
+                        </div>
+                      </div>
+                      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+                        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#7d7979">From</div>
+                        <div style="font-size:38px;line-height:.9;font-weight:600">${{ h.price }}</div>
+                        <div style="font-size:12px;color:#7d7979">per night</div>
+                        <button class="btn btn-secondary" style="margin-top:6px">View rooms</button>
+                      </div>
+                    </article>
+                  </sc-for>
+                  <div style="height:1px;background:rgba(32,30,29,.16)"></div>
+                </main>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- PROPERTY -->
+          <sc-if value="{{ newProduct }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ newPad }}">
+              <div style="padding-top:26px">
+                <button onClick="{{ goSearch }}" class="btn btn-ghost" style="margin-left:-5px">← All hotels in {{ product.city }}</button>
+                <div style="display:grid;grid-template-columns:{{ newTwoCols }};gap:46px;padding-top:14px">
+                  <div>
+                    <div style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#0088b0;margin-bottom:8px">Hotel · {{ product.city }}</div>
+                    <h1 style="font-size:58px;line-height:.98;margin:0 0 10px;letter-spacing:-0.02em">{{ product.name }}</h1>
+                    <p style="font-style:italic;font-size:18px;color:#605d5d;margin:0 0 22px">{{ product.place }} · {{ product.rating }} from {{ product.reviews }} reviews</p>
+
+                    <div class="halftone" style="background:#c9c7c2;height:320px;display:flex;align-items:flex-end;padding:12px;margin-bottom:8px">
+                      <span style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#605d5d">Photograph — plate</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px">
+                      <div class="halftone" style="background:#c9c7c2;height:92px"></div>
+                      <div class="halftone" style="background:#c9c7c2;height:92px"></div>
+                      <div class="halftone" style="background:#c9c7c2;height:92px"></div>
+                    </div>
+
+                    <p style="font-size:18px;line-height:1.55;max-width:60ch;text-wrap:pretty;margin:0 0 30px">{{ product.blurb }}</p>
+
+                    <h3 style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#605d5d;margin:0 0 12px">Rooms</h3>
+                    <table class="table">
+                      <thead><tr><th>Room</th><th>Sleeps</th><th>Board</th><th>Cancellation</th><th style="text-align:right">Per night</th><th></th></tr></thead>
+                      <tbody>
+                        <sc-for list="{{ rooms }}" as="r" hint-placeholder-count="3">
+                          <tr>
+                            <td style="font-weight:600">{{ r.name }}</td>
+                            <td>{{ r.sleeps }}</td>
+                            <td>{{ r.board }}</td>
+                            <td>{{ r.cancel }}</td>
+                            <td style="text-align:right;font-size:17px">${{ r.price }}</td>
+                            <td style="text-align:right"><button onClick="{{ r.select }}" class="btn btn-secondary">Select</button></td>
+                          </tr>
+                        </sc-for>
+                      </tbody>
+                    </table>
+
+                    <h3 style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#605d5d;margin:34px 0 12px">Amenities</h3>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                      <sc-for list="{{ product.amenities }}" as="a" hint-placeholder-count="4">
+                        <span class="tag tag-accent">{{ a }}</span>
+                      </sc-for>
+                    </div>
+
+                    <h3 style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#605d5d;margin:34px 0 12px">House rules</h3>
+                    <div style="display:grid;grid-template-columns:{{ newRulesCols }};gap:18px 40px;font-size:14.5px;max-width:640px">
+                      <div><div style="color:#7d7979;font-size:12px">Check in</div>From 15:00</div>
+                      <div><div style="color:#7d7979;font-size:12px">Check out</div>Until 11:00</div>
+                      <div><div style="color:#7d7979;font-size:12px">Cancellation</div>Free until 48h before arrival</div>
+                      <div><div style="color:#7d7979;font-size:12px">Supplier</div>{{ product.supplier }}</div>
+                    </div>
+                  </div>
+
+                  <aside style="align-self:start;position:sticky;top:80px;display:flex;flex-direction:column;gap:14px;padding-left:22px;border-left:1px solid rgba(32,30,29,.16)">
+                    <div style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#7d7979">Your stay</div>
+                    <div style="font-size:15px">14–18 September · 4 nights<br>2 adults · 1 room</div>
+                    <div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
+                      <span style="font-size:46px;font-weight:600;line-height:.9">${{ product.price }}</span>
+                      <span style="font-size:13px;color:#7d7979">per night</span>
+                    </div>
+                    <div style="font-size:14px;color:#605d5d">${{ product.stayTotal }} total including tax</div>
+                    <button onClick="{{ addToCart }}" class="btn btn-primary btn-block">Add to cart</button>
+                    <button onClick="{{ addAndCheckout }}" class="btn btn-secondary btn-block">Reserve now</button>
+                    <p style="font-size:12.5px;color:#7d7979;margin:6px 0 0;line-height:1.45">Free cancellation until 12 September. No card charged today.</p>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- CHECKOUT -->
+          <sc-if value="{{ newCheckout }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ newPad }}">
+              <div style="padding-top:30px">
+                <h1 style="font-size:48px;margin:0 0 4px;letter-spacing:-0.015em">Checkout</h1>
+                <p style="font-size:15px;color:#605d5d;margin:0 0 30px">{{ cartCount }} reservation(s). Confirmation is instant for direct inventory.</p>
+                <div style="display:grid;grid-template-columns:{{ newTwoCols }};gap:46px">
+                  <div>
+                    <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ true }}">
+                      <p style="font-size:17px;color:#605d5d">Your cart is empty. <a href="#search" onClick="{{ goSearch }}">Browse hotels</a>.</p>
+                    </sc-if>
+                    <table class="table">
+                      <sc-for list="{{ cart }}" as="c" hint-placeholder-count="0">
+                        <tr>
+                          <td style="width:70px"><div class="halftone" style="background:#c9c7c2;height:52px"></div></td>
+                          <td>
+                            <div style="font-size:18px;font-weight:600">{{ c.name }}</div>
+                            <div style="font-size:13px;color:#7d7979">Hotel · 14–18 Sep · 2 adults · ref {{ c.shortId }}</div>
+                          </td>
+                          <td style="text-align:right;font-size:17px">${{ c.price }}</td>
+                          <td style="text-align:right;width:40px"><button onClick="{{ c.remove }}" class="btn btn-ghost" style="color:#aa0b56">Remove</button></td>
+                        </tr>
+                      </sc-for>
+                    </table>
+
+                    <h3 style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#605d5d;margin:34px 0 12px">Lead traveller</h3>
+                    <div style="display:grid;grid-template-columns:{{ newRulesCols }};gap:14px;max-width:640px">
+                      <div class="field"><label>First name</label><input class="input" value="Ada"></div>
+                      <div class="field"><label>Last name</label><input class="input" value="Okonkwo"></div>
+                      <div class="field"><label>Email</label><input class="input" value="ada@example.com"></div>
+                      <div class="field"><label>Phone</label><input class="input" value="+44 7700 900412"></div>
+                    </div>
+                    <div class="field" style="max-width:640px;margin-top:14px"><label>Special requests</label><textarea class="input">Late arrival, around 22:00.</textarea></div>
+                  </div>
+
+                  <aside style="align-self:start;padding-left:22px;border-left:1px solid rgba(32,30,29,.16);display:flex;flex-direction:column;gap:12px">
+                    <div style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#7d7979">Price breakdown</div>
+                    <div style="display:flex;justify-content:space-between;font-size:15px"><span>Room subtotal</span><span>${{ subtotal }}</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:15px"><span>Taxes &amp; fees</span><span>Included</span></div>
+                    <sc-if value="{{ hasDiscount }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;justify-content:space-between;font-size:15px;color:#aa0b56"><span>Coupon SUMMER15</span><span>−${{ discount }}</span></div>
+                    </sc-if>
+                    <div style="height:1px;background:rgba(32,30,29,.16);margin:4px 0"></div>
+                    <div style="display:flex;justify-content:space-between;align-items:baseline">
+                      <span style="font-size:15px">Total</span>
+                      <span style="font-size:34px;font-weight:600">${{ total }}</span>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:8px">
+                      <input class="input" placeholder="Promo code" value="{{ coupon }}" onChange="{{ setCoupon }}">
+                      <button onClick="{{ applyCoupon }}" class="btn btn-secondary">Apply</button>
+                    </div>
+                    <button onClick="{{ openPay }}" class="btn btn-primary btn-block" style="margin-top:10px">Pay with wallet</button>
+                    <p style="font-size:12.5px;color:#7d7979;margin:4px 0 0;line-height:1.45">Authorised with your device biometrics. Wallet balance ${{ walletBalance }}.</p>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ORDERS -->
+          <sc-if value="{{ newOrders }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ newPad }}">
+              <div style="padding-top:30px">
+                <h1 style="font-size:48px;margin:0 0 4px;letter-spacing:-0.015em">Your reservations</h1>
+                <p style="font-size:15px;color:#605d5d;margin:0 0 30px">Upcoming first. Vouchers are issued once the supplier confirms.</p>
+                <sc-for list="{{ orders }}" as="o" hint-placeholder-count="4">
+                  <article style="display:grid;grid-template-columns:{{ newOrderCols }};gap:22px;padding:20px 0;border-top:1px solid rgba(32,30,29,.16);align-items:start">
+                    <div style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#7d7979">{{ o.ref }}</div>
+                    <div>
+                      <div style="font-size:22px;font-weight:600;line-height:1.15">{{ o.name }}</div>
+                      <div style="font-style:italic;font-size:14.5px;color:#605d5d">{{ o.place }} · {{ o.dates }}</div>
+                    </div>
+                    <div><span style="{{ o.tagClass }}">{{ o.status }}</span></div>
+                    <div style="text-align:right;font-size:20px;font-weight:600">${{ o.total }}</div>
+                    <div style="text-align:right;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+                      <button class="btn btn-secondary">Voucher</button>
+                      <button class="btn btn-ghost">Manage</button>
+                    </div>
+                  </article>
+                </sc-for>
+                <div style="height:1px;background:rgba(32,30,29,.16)"></div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- WALLET -->
+          <sc-if value="{{ newWallet }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ newPad }}">
+              <div style="padding-top:30px;display:grid;grid-template-columns:{{ newTwoCols }};gap:46px">
+                <div>
+                  <div style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#0088b0;margin-bottom:14px">Wallet balance</div>
+                  <span class="cmyk-num" style="font-size:96px;font-weight:600;display:inline-block">
+                    <span class="paper">${{ walletBalance }}</span>
+                    <span class="plate plate-c" aria-hidden="true">${{ walletBalance }}</span>
+                    <span class="plate plate-m" aria-hidden="true">${{ walletBalance }}</span>
+                    <span class="plate plate-y" aria-hidden="true">${{ walletBalance }}</span>
+                  </span>
+                  <p style="font-size:15px;color:#605d5d;max-width:44ch;margin:22px 0 0;line-height:1.5">Credits from referrals, refunds and goodwill adjustments. Spendable at checkout on any product; not withdrawable.</p>
+                  <div style="display:flex;gap:10px;margin-top:20px">
+                    <button class="btn btn-primary">Top up</button>
+                    <button class="btn btn-secondary">Statement</button>
+                  </div>
+                </div>
+                <div>
+                  <h3 style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#605d5d;margin:0 0 12px">Ledger</h3>
+                  <table class="table">
+                    <thead><tr><th>Date</th><th>Entry</th><th style="text-align:right">Amount</th><th style="text-align:right">Balance</th></tr></thead>
+                    <tbody>
+                      <sc-for list="{{ ledger }}" as="l" hint-placeholder-count="5">
+                        <tr>
+                          <td style="white-space:nowrap;color:#7d7979">{{ l.date }}</td>
+                          <td>{{ l.entry }}</td>
+                          <td style="text-align:right;{{ l.amountStyle }}">{{ l.amount }}</td>
+                          <td style="text-align:right">{{ l.balance }}</td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- REFERRALS -->
+          <sc-if value="{{ newReferrals }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ newPad }}">
+              <div style="padding-top:30px;display:grid;grid-template-columns:{{ newTwoCols }};gap:46px">
+                <div>
+                  <h1 style="font-size:52px;line-height:1;margin:0 0 14px;letter-spacing:-0.02em">Give $20, get $20</h1>
+                  <p style="font-size:18px;line-height:1.55;max-width:46ch;color:#3c3939;margin:0 0 28px;text-wrap:pretty">Send a friend your code. They take $20 off their first stay; you get $20 in wallet credit once they check out.</p>
+                  <div style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#7d7979;margin-bottom:10px">Your code</div>
+                  <span class="cmyk-num" style="font-size:64px;font-weight:600;display:inline-block;letter-spacing:.02em">
+                    <span class="paper">ADA-8842</span>
+                    <span class="plate plate-c" aria-hidden="true">ADA-8842</span>
+                    <span class="plate plate-m" aria-hidden="true">ADA-8842</span>
+                    <span class="plate plate-y" aria-hidden="true">ADA-8842</span>
+                  </span>
+                  <div style="display:flex;gap:10px;margin-top:26px;flex-wrap:wrap">
+                    <button class="btn btn-primary">Copy link</button>
+                    <button class="btn btn-secondary">Email invite</button>
+                    <button class="btn btn-secondary">Share</button>
+                  </div>
+                </div>
+                <div>
+                  <h3 style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#605d5d;margin:0 0 12px">Invitations</h3>
+                  <table class="table">
+                    <thead><tr><th>Friend</th><th>Sent</th><th>Status</th><th style="text-align:right">Reward</th></tr></thead>
+                    <tbody>
+                      <sc-for list="{{ referrals }}" as="r" hint-placeholder-count="4">
+                        <tr>
+                          <td>{{ r.who }}</td>
+                          <td style="color:#7d7979">{{ r.sent }}</td>
+                          <td><span style="{{ r.tagClass }}">{{ r.status }}</span></td>
+                          <td style="text-align:right">{{ r.reward }}</td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                  <p style="font-size:12.5px;color:#7d7979;line-height:1.5;margin-top:18px;max-width:44ch">Credit is released after the referee's first completed stay. Self-referral and duplicate devices are rejected automatically.</p>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- AUTH -->
+          <sc-if value="{{ newAuth }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ newPad }}">
+              <div style="padding-top:40px;display:grid;grid-template-columns:{{ newTwoCols }};gap:46px;align-items:start">
+                <div style="max-width:420px">
+                  <h1 style="font-size:44px;line-height:1.02;margin:0 0 8px;letter-spacing:-0.015em">Sign in</h1>
+                  <p style="font-size:15px;color:#605d5d;margin:0 0 26px">Or <a href="#register" style="color:#0088b0">create an account</a> — it takes a phone number and one code.</p>
+                  <div style="display:flex;flex-direction:column;gap:14px">
+                    <div class="field"><label>Email or phone</label><input class="input" value="ada@example.com"></div>
+                    <div class="field"><label>Password</label><input class="input" type="password" value="............"></div>
+                    <button onClick="{{ goSearch }}" class="btn btn-primary btn-block">Sign in</button>
+                    <div style="display:flex;align-items:center;gap:12px;margin:8px 0">
+                      <div style="flex:1;height:1px;background:rgba(32,30,29,.16)"></div>
+                      <span style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#7d7979">or</span>
+                      <div style="flex:1;height:1px;background:rgba(32,30,29,.16)"></div>
+                    </div>
+                    <button class="btn btn-secondary btn-block">Use a one-time code</button>
+                    <button class="btn btn-secondary btn-block">Sign in with a passkey</button>
+                  </div>
+                  <p style="font-size:12.5px;color:#7d7979;line-height:1.5;margin-top:22px">New devices are logged and unusual sign-ins are challenged. Sessions expire after 30 days.</p>
+                </div>
+                <div>
+                  <div style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#0088b0;margin-bottom:14px">Verify</div>
+                  <p style="font-size:15px;color:#605d5d;margin:0 0 16px;max-width:40ch">We sent a six-digit code to +44 7700 900412.</p>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <sc-for list="{{ otpBoxes }}" as="d" hint-placeholder-count="6">
+                      <div style="width:52px;height:64px;display:grid;place-items:center;font-size:30px;border:1px solid rgba(32,30,29,.16);border-radius:2px;background:#eae9e9">{{ d }}</div>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex;gap:10px;margin-top:20px">
+                    <button class="btn btn-primary">Verify</button>
+                    <button class="btn btn-ghost">Resend in 0:24</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- SUPPLIER -->
+          <sc-if value="{{ newSupplier }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ newPad }}">
+              <div style="padding-top:30px">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px">
+                  <div>
+                    <div style="font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#0088b0">Supplier · Costa Blanca Hoteles</div>
+                    <h1 style="font-size:44px;margin:4px 0 0;letter-spacing:-0.015em">Operations</h1>
+                  </div>
+                  <div class="seg">
+                    <label class="seg-opt"><input type="radio" name="sup2" checked onChange="{{ supInv }}">Inventory</label>
+                    <label class="seg-opt"><input type="radio" name="sup2" onChange="{{ supBook }}">Booking queue</label>
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:{{ newStatCols }};gap:34px;margin-bottom:34px">
+                  <sc-for list="{{ supStats }}" as="k" hint-placeholder-count="4">
+                    <div>
+                      <div style="font-size:11.5px;letter-spacing:0.09em;text-transform:uppercase;color:#7d7979;margin-bottom:6px">{{ k.label }}</div>
+                      <div style="font-size:36px;font-weight:600;line-height:1">{{ k.value }}</div>
+                      <div style="font-size:12.5px;color:#7d7979;margin-top:4px">{{ k.note }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+
+                <sc-if value="{{ supIsInv }}" hint-placeholder-val="{{ true }}">
+                  <table class="table">
+                    <thead><tr><th>Property</th><th>Type</th><th>Rooms</th><th>Rate</th><th>Occupancy</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      <sc-for list="{{ supInventory }}" as="i" hint-placeholder-count="4">
+                        <tr>
+                          <td style="font-weight:600">{{ i.name }}</td>
+                          <td>Hotel</td>
+                          <td>{{ i.rooms }}</td>
+                          <td>${{ i.price }}</td>
+                          <td>{{ i.occupancy }}</td>
+                          <td><span class="tag tag-accent">Active</span></td>
+                          <td style="text-align:right"><button class="btn btn-ghost">Edit rates</button></td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </sc-if>
+
+                <sc-if value="{{ supIsBook }}" hint-placeholder-val="{{ false }}">
+                  <table class="table">
+                    <thead><tr><th>Reference</th><th>Property</th><th>Guest</th><th>Dates</th><th style="text-align:right">Amount</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      <sc-for list="{{ supQueue }}" as="b" hint-placeholder-count="4">
+                        <tr>
+                          <td style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#7d7979">{{ b.ref }}</td>
+                          <td style="font-weight:600">{{ b.name }}</td>
+                          <td>{{ b.guest }}</td>
+                          <td style="white-space:nowrap">{{ b.dates }}</td>
+                          <td style="text-align:right">${{ b.amount }}</td>
+                          <td><span style="{{ b.tagClass }}">{{ b.status }}</span></td>
+                          <td style="text-align:right;white-space:nowrap"><button class="btn btn-primary">Confirm</button></td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ADMIN -->
+          <sc-if value="{{ newAdmin }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ newPad }}">
+              <div style="padding-top:30px">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:8px">
+                  <h1 style="font-size:44px;margin:0;letter-spacing:-0.015em">Admin console</h1>
+                  <div class="seg">
+                    <label class="seg-opt"><input type="radio" name="adm2" checked onChange="{{ admAnalytics }}">Analytics</label>
+                    <label class="seg-opt"><input type="radio" name="adm2" onChange="{{ admSuppliers }}">Suppliers</label>
+                  </div>
+                </div>
+                <p style="font-size:15px;color:#605d5d;margin:0 0 30px">Trailing thirty days to 11 August 2026.</p>
+
+                <sc-if value="{{ admIsAnalytics }}" hint-placeholder-val="{{ true }}">
+                  <div>
+                    <div style="display:grid;grid-template-columns:{{ newStatCols }};gap:34px;margin-bottom:40px">
+                      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="3">
+                        <div>
+                          <div style="font-size:11.5px;letter-spacing:0.09em;text-transform:uppercase;color:#7d7979;margin-bottom:10px">{{ k.label }}</div>
+                          <span class="cmyk-num" style="font-size:54px;font-weight:600;display:inline-block">
+                            <span class="paper">{{ k.value }}</span>
+                            <span class="plate plate-c" aria-hidden="true">{{ k.value }}</span>
+                            <span class="plate plate-m" aria-hidden="true">{{ k.value }}</span>
+                            <span class="plate plate-y" aria-hidden="true">{{ k.value }}</span>
+                          </span>
+                          <div style="font-size:12.5px;color:#7d7979;margin-top:12px">{{ k.note }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="display:grid;grid-template-columns:{{ newTwoCols }};gap:46px">
+                      <div>
+                        <h3 style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#605d5d;margin:0 0 12px">Bookings by supplier</h3>
+                        <table class="table">
+                          <thead><tr><th>Supplier</th><th style="text-align:right">Bookings</th><th style="width:45%"></th></tr></thead>
+                          <tbody>
+                            <sc-for list="{{ supplierBookings }}" as="sb" hint-placeholder-count="4">
+                              <tr>
+                                <td style="font-weight:600">{{ sb.name }}</td>
+                                <td style="text-align:right">{{ sb.total }}</td>
+                                <td><div style="{{ sb.barStyle }}"></div></td>
+                              </tr>
+                            </sc-for>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h3 style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#605d5d;margin:0 0 12px">Coupon liability</h3>
+                        <table class="table">
+                          <thead><tr><th>Code</th><th>Rule</th><th style="text-align:right">Redeemed</th><th style="text-align:right">Liability</th></tr></thead>
+                          <tbody>
+                            <sc-for list="{{ coupons }}" as="c" hint-placeholder-count="4">
+                              <tr>
+                                <td style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px">{{ c.code }}</td>
+                                <td style="font-size:13px;color:#605d5d">{{ c.rule }}</td>
+                                <td style="text-align:right">{{ c.redeemed }}</td>
+                                <td style="text-align:right">{{ c.liability }}</td>
+                              </tr>
+                            </sc-for>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ admIsSuppliers }}" hint-placeholder-val="{{ false }}">
+                  <table class="table">
+                    <thead><tr><th>Supplier</th><th>Registration</th><th>Properties</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      <sc-for list="{{ suppliers }}" as="s" hint-placeholder-count="4">
+                        <tr>
+                          <td style="font-weight:600">{{ s.name }}</td>
+                          <td style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:#605d5d">{{ s.reg }}</td>
+                          <td>{{ s.properties }}</td>
+                          <td><span style="{{ s.tagClass }}">{{ s.status }}</span></td>
+                          <td style="text-align:right"><button style="{{ s.btnClass }}">{{ s.action }}</button></td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="{{ newPad }}">
+            <div style="margin-top:56px;height:1px;background:rgba(32,30,29,.16)"></div>
+            <div style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:14px 0 40px;font-size:11.5px;letter-spacing:0.09em;text-transform:uppercase;color:#7d7979">
+              <span>Almanac Travel</span><span>Flights · Bus · Hotels · Hostels · Tours</span><span>Support · Terms · Privacy</span>
+            </div>
+          </div>
+
+          <!-- new cart drawer -->
+          <sc-if value="{{ newDrawer }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:rgba(45,43,43,.5);z-index:70">
+              <div style="position:absolute;top:0;right:0;bottom:0;width:min(420px,100%);background:#f3f2f2;padding:26px;display:flex;flex-direction:column;box-shadow:-12px 0 32px rgba(45,43,43,.22)">
+                <div style="font-size:26px;font-weight:600;margin-bottom:2px">Your cart</div>
+                <div style="font-size:13.5px;color:#605d5d;margin-bottom:18px">Held for 20 minutes. Rates are not guaranteed after that.</div>
+                <div style="height:1px;background:rgba(32,30,29,.16)"></div>
+                <div style="flex:1;overflow:auto">
+                  <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ true }}">
+                    <p style="font-size:15px;color:#7d7979;padding-top:28px">Nothing reserved yet.</p>
+                  </sc-if>
+                  <sc-for list="{{ cart }}" as="c" hint-placeholder-count="0">
+                    <div style="display:flex;justify-content:space-between;gap:14px;padding:16px 0;border-bottom:1px solid rgba(32,30,29,.12)">
+                      <div>
+                        <div style="font-size:17px;font-weight:600">{{ c.name }}</div>
+                        <div style="font-size:13px;color:#7d7979">14–18 Sep · 2 adults</div>
+                        <button onClick="{{ c.remove }}" class="btn btn-ghost" style="color:#aa0b56;margin-left:-5px;margin-top:4px">Remove</button>
+                      </div>
+                      <div style="font-size:18px;font-weight:600;white-space:nowrap">${{ c.price }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="height:1px;background:rgba(32,30,29,.16);margin-bottom:14px"></div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px"><span style="font-size:15px">Total</span><span style="font-size:30px;font-weight:600">${{ subtotal }}</span></div>
+                <button onClick="{{ goCheckout }}" class="btn btn-primary btn-block">Checkout</button>
+                <button onClick="{{ closeDrawer }}" class="btn btn-secondary btn-block">Keep looking</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- new biometric dialog -->
+          <sc-if value="{{ newPayOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;display:grid;place-items:center;padding:20px;background:rgba(45,43,43,.5);z-index:75">
+              <div class="dialog">
+                <div class="dialog-title">Authorise payment</div>
+                <div class="dialog-body">Confirm ${{ total }} from your Almanac wallet using this device's biometrics.</div>
+                <div style="display:grid;place-items:center;padding:26px 0">
+                  <div style="width:96px;height:96px;border-radius:50%;border:2px solid #0088b0;display:grid;place-items:center;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#0088b0">{{ payWord }}</div>
+                </div>
+                <div class="dialog-actions">
+                  <button onClick="{{ closePay }}" class="btn btn-secondary">Cancel</button>
+                  <button onClick="{{ authorize }}" class="btn btn-primary">{{ payLabel }}</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-if>
+
+      <!-- built cart drawer -->
+      <sc-if value="{{ builtDrawer }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:70">
+          <div style="position:absolute;top:0;right:0;bottom:0;width:min(448px,100%);background:oklch(1 0 0);font-family:Geist,ui-sans-serif,system-ui,sans-serif;display:flex;flex-direction:column;padding:24px;box-shadow:-8px 0 30px rgba(0,0,0,.15)">
+            <div style="display:grid;gap:4px">
+              <div style="font-size:18px;font-weight:600">Your Cart</div>
+              <div style="font-size:14px;color:oklch(0.556 0 0)">Review your selected reservations before proceeding to checkout.</div>
+            </div>
+            <div style="flex:1;margin-top:24px;overflow:auto">
+              <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:48px;color:oklch(0.556 0 0)">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.2;margin-bottom:16px"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                  <p style="margin:0">Your cart is empty.</p>
+                </div>
+              </sc-if>
+              <div style="display:flex;flex-direction:column;gap:16px">
+                <sc-for list="{{ cart }}" as="c" hint-placeholder-count="0">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                      <p style="font-weight:500;margin:0;text-transform:capitalize">{{ c.type }}</p>
+                      <p style="font-size:14px;color:oklch(0.556 0 0);margin:0">ID: {{ c.shortId }}...</p>
+                      <p style="font-size:14px;font-weight:600;margin:0">${{ c.price }} x {{ c.qty }}</p>
+                    </div>
+                    <button onClick="{{ c.remove }}" style="width:32px;height:32px;border:0;border-radius:10px;background:transparent;cursor:pointer;color:oklch(0.577 0.245 27.325)">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding-top:24px">
+              <div style="height:1px;background:oklch(0.922 0 0);margin-bottom:16px"></div>
+              <div style="display:flex;justify-content:space-between;font-weight:700;font-size:18px;margin-bottom:24px"><span>Total</span><span>${{ subtotal }}</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <button onClick="{{ clearCart }}" style="height:32px;border:1px solid oklch(0.922 0 0);border-radius:10px;background:oklch(1 0 0);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer">Clear Cart</button>
+                <button onClick="{{ goCheckout }}" style="height:32px;border:0;border-radius:10px;background:oklch(0.205 0 0);color:oklch(0.985 0 0);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer">Checkout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+const HOTELS = [
+  { id: 'h1', name: 'The Halcyon', place: 'Lisbon, Portugal', city: 'Lisbon', price: 184, rooms: 12, rating: 8.9, reviews: 412, supplier: 'Marta Ribeiro', amenities: ['Rooftop pool', 'Free Wi-Fi', 'Breakfast included', 'Airport shuttle'], blurb: 'A 1930s townhouse above the Bica funicular, eleven rooms and a rooftop that looks over the Tagus.' },
+  { id: 'h2', name: 'Kestrel House', place: 'Edinburgh, Scotland', city: 'Edinburgh', price: 142, rooms: 5, rating: 9.1, reviews: 188, supplier: 'Iain Docherty', amenities: ['Fireplace lounge', 'Free Wi-Fi', 'Pet friendly'], blurb: 'Five rooms in a New Town terrace, ten minutes from Waverley on foot.' },
+  { id: 'h3', name: 'Marina Rosa', place: 'Valencia, Spain', city: 'Valencia', price: 96, rooms: 21, rating: 8.4, reviews: 967, supplier: 'Costa Blanca Hoteles', amenities: ['Beachfront', 'Outdoor pool', 'Bike hire'], blurb: 'Beachfront rooms on Malvarrosa, a fifteen-minute tram ride from the old town.' },
+  { id: 'h4', name: 'Hotel Verbena', place: 'Mexico City, Mexico', city: 'Mexico City', price: 121, rooms: 9, rating: 8.7, reviews: 534, supplier: 'Grupo Verbena', amenities: ['Courtyard bar', 'Gym', 'Breakfast included'], blurb: 'A Roma Norte courtyard hotel with a bar that stays open later than it should.' },
+  { id: 'h5', name: 'Aster & Pine', place: 'Portland, United States', city: 'Portland', price: 168, rooms: 14, rating: 8.6, reviews: 301, supplier: 'Aster Hospitality', amenities: ['Parking', 'Free Wi-Fi', 'Pet friendly'], blurb: 'Fourteen rooms off Alberta Street, parking included, dogs welcome.' },
+  { id: 'h6', name: 'The Fenwick', place: 'London, United Kingdom', city: 'London', price: 233, rooms: 3, rating: 9.3, reviews: 145, supplier: 'Fenwick Rooms Ltd', amenities: ['Concierge', 'Bar', 'Breakfast included'], blurb: 'Three suites over a Marylebone bar. Booked out most weekends.' }
+];
+
+const SCREENS = [
+  ['search', 'Search'], ['product', 'Property'], ['checkout', 'Checkout'],
+  ['orders', 'Orders'], ['wallet', 'Wallet'], ['referrals', 'Referrals'],
+  ['auth', 'Sign in'], ['supplier', 'Supplier'], ['admin', 'Admin']
+];
+const CODED = ['search', 'product', 'checkout', 'supplier', 'admin'];
+
+class Component extends DCLogic {
+  state = {
+    screen: 'search', mode: 'built', mobile: false,
+    cart: [], productId: 'h1', coupon: '', discount: 0,
+    pay: 'idle', payOpen: false, drawer: false,
+    supTab: 'inventory', admTab: 'analytics'
+  };
+
+  set(k, v) { this.setState({ [k]: v }); }
+
+  chromeTab(active) {
+    return 'padding:5px 12px;border:0;font:inherit;font-size:12px;white-space:nowrap;cursor:pointer;' +
+      (active ? 'background:#f3f2f2;color:#201e1d' : 'background:transparent;color:rgba(243,242,242,.7)');
+  }
+
+  navTab(active) {
+    return 'padding:5px 10px;border:0;border-radius:2px;font:inherit;font-size:12px;white-space:nowrap;cursor:pointer;' +
+      (active ? 'background:#0088b0;color:#f3f2f2' : 'background:rgba(243,242,242,.08);color:rgba(243,242,242,.75)');
+  }
+
+  shadTab(active) {
+    return 'display:inline-flex;align-items:center;justify-content:center;gap:8px;height:30px;border:0;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;' +
+      (active ? 'background:oklch(1 0 0);color:oklch(0.145 0 0);box-shadow:0 1px 2px rgba(0,0,0,.08)' : 'background:transparent;color:oklch(0.556 0 0)');
+  }
+
+  addItem(h) {
+    const cart = this.state.cart.slice();
+    if (!cart.some(c => c.id === h.id)) cart.push({ id: h.id, name: h.name, price: h.price, qty: 1, type: 'hotel' });
+    this.setState({ cart, drawer: true });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const product = HOTELS.find(h => h.id === s.productId) || HOTELS[0];
+    const subtotal = s.cart.reduce((t, c) => t + c.price * c.qty, 0);
+    const total = Math.max(0, subtotal - s.discount);
+    const isCoded = CODED.indexOf(s.screen) > -1;
+    const built = s.mode === 'built';
+
+    const vals = {
+      navItems: SCREENS.map(([id, label]) => ({
+        label, style: this.navTab(s.screen === id), go: () => this.set('screen', id)
+      })),
+      setBuilt: () => this.set('mode', 'built'),
+      setNew: () => this.set('mode', 'new'),
+      setDesktop: () => this.set('mobile', false),
+      setMobile: () => this.set('mobile', true),
+      tabBuilt: this.chromeTab(built), tabNew: this.chromeTab(!built),
+      tabDesktop: this.chromeTab(!s.mobile), tabMobile: this.chromeTab(s.mobile),
+
+      frameStyle: s.mobile
+        ? 'width:390px;flex:none;border-radius:26px;overflow:hidden;position:relative;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.28)'
+        : 'width:100%;max-width:1320px;border-radius:6px;overflow:hidden;position:relative;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.22)',
+      twContainer: s.mobile ? 'width:100%;padding-left:16px;padding-right:16px' : 'width:100%;max-width:1280px;padding-left:16px;padding-right:16px',
+      builtGridCols: s.mobile ? '1fr' : 'repeat(3,minmax(0,1fr))',
+      builtTwoCol: s.mobile ? '1fr' : 'repeat(2,minmax(0,1fr))',
+      builtThreeCol: s.mobile ? '1fr' : 'repeat(3,minmax(0,1fr))',
+
+      builtSearch: built && s.screen === 'search',
+      builtProduct: built && s.screen === 'product',
+      builtCheckout: built && s.screen === 'checkout',
+      builtSupplier: built && s.screen === 'supplier',
+      builtAdmin: built && s.screen === 'admin',
+      builtGap: built && !isCoded,
+      builtDrawer: built && s.drawer,
+      gapTitle: (SCREENS.find(x => x[0] === s.screen) || ['', ''])[1] + ' — not in the codebase',
+
+      hotels: HOTELS.map(h => Object.assign({}, h, {
+        open: () => this.setState({ productId: h.id, screen: 'product' })
+      })),
+      product: Object.assign({}, product, { amenityLine: product.amenities.join(', ') }),
+      addToCart: () => this.addItem(product),
+
+      cart: s.cart.map(c => Object.assign({}, c, {
+        shortId: '68f2a1' + c.id,
+        remove: () => this.setState({ cart: s.cart.filter(x => x.id !== c.id) })
+      })),
+      cartCount: s.cart.length, hasCart: s.cart.length > 0, cartEmpty: s.cart.length === 0,
+      subtotal, total, discount: s.discount, hasDiscount: s.discount > 0,
+      coupon: s.coupon,
+      setCoupon: (e) => this.set('coupon', e.target.value),
+      applyCoupon: () => this.setState({ discount: Math.round(subtotal * 0.15) }),
+      openDrawer: () => this.set('drawer', true),
+      closeDrawer: () => this.set('drawer', false),
+      clearCart: () => this.setState({ cart: [], discount: 0 }),
+      goCheckout: () => this.setState({ drawer: false, screen: 'checkout' }),
+      goSearch: () => this.set('screen', 'search'),
+      openPay: () => this.setState({ payOpen: true, pay: 'idle' }),
+      payOpen: s.payOpen,
+      paySuccess: s.pay === 'success',
+      payLabel: s.pay === 'verifying' ? 'Verifying...' : (s.pay === 'success' ? 'Authorize Payment' : 'Authorize Payment'),
+      authorize: () => {
+        this.set('pay', 'verifying');
+        setTimeout(() => this.set('pay', 'success'), 900);
+        setTimeout(() => this.setState({ payOpen: false, screen: 'orders', cart: [], discount: 0 }), 2000);
+      },
+
+      supInv: () => this.set('supTab', 'inventory'),
+      supBook: () => this.set('supTab', 'bookings'),
+      supTabInvStyle: this.shadTab(s.supTab === 'inventory'),
+      supTabBookStyle: this.shadTab(s.supTab === 'bookings'),
+      supTitle: s.supTab === 'inventory' ? 'Inventory Management' : 'Pending Bookings',
+      supDesc: s.supTab === 'inventory' ? 'View and manage your active products.' : 'Review and confirm incoming reservations.',
+      supHeads: s.supTab === 'inventory' ? ['ID', 'Type', 'Details', 'Price', 'Status'] : ['Booking ID', 'Product Type', 'Quantity', 'Amount', 'Status', 'Action'],
+      supShowAction: s.supTab === 'bookings',
+      supRows: s.supTab === 'inventory'
+        ? HOTELS.slice(0, 4).map((h, i) => ({
+            id: '6712ab' + i + 'c', type: 'hotel', detail: h.name, amount: '$' + h.price, status: 'Active',
+            badgeStyle: 'display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:26px;border:1px solid oklch(0.922 0 0);background:#f0fdf4;color:#00a63e;font-size:12px;font-weight:500'
+          }))
+        : [
+            { id: '9ab41f0e', type: 'hotel', detail: 'The Halcyon', amount: '$368', status: 'pending_supplier' },
+            { id: '77c02b3d', type: 'hotel', detail: 'Kestrel House', amount: '$142', status: 'pending_supplier' },
+            { id: '41de8a92', type: 'hotel', detail: 'Marina Rosa', amount: '$192', status: 'pending_supplier' }
+          ].map(r => Object.assign(r, {
+            badgeStyle: 'display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:26px;background:oklch(0.97 0 0);color:oklch(0.205 0 0);font-size:12px;font-weight:500'
+          })),
+
+      admAnalytics: () => this.set('admTab', 'analytics'),
+      admSuppliers: () => this.set('admTab', 'suppliers'),
+      admTabAnaStyle: this.shadTab(s.admTab === 'analytics'),
+      admTabSupStyle: this.shadTab(s.admTab === 'suppliers'),
+      admIsAnalytics: s.admTab === 'analytics',
+      admIsSuppliers: s.admTab === 'suppliers',
+      kpis: [
+        { label: 'Gross Merchandise Value (GMV)', value: '$1,284,900', note: 'Total revenue processed' },
+        { label: 'Total Orders', value: '7,412', note: 'Confirmed & Paid' },
+        { label: 'Wallet Liabilities', value: '$38,240', note: 'Outstanding internal credits' }
+      ],
+      supplierBookings: [
+        { name: 'Costa Blanca Hoteles', total: 1834 },
+        { name: 'Grupo Verbena', total: 962 },
+        { name: 'Aster Hospitality', total: 611 },
+        { name: 'Fenwick Rooms Ltd', total: 208 }
+      ],
+      suppliers: [
+        { name: 'Marta Ribeiro', reg: 'PT-5512094', status: 'active' },
+        { name: 'Iain Docherty', reg: 'SC-778120', status: 'pending' },
+        { name: 'Costa Blanca Hoteles', reg: 'ES-4410882', status: 'active' },
+        { name: 'Fenwick Rooms Ltd', reg: 'N/A', status: 'pending' }
+      ].map(x => Object.assign({}, x, {
+        action: x.status === 'pending' ? 'Approve' : 'Active',
+        badgeStyle: x.status === 'active'
+          ? 'display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:26px;background:oklch(0.205 0 0);color:oklch(0.985 0 0);font-size:12px;font-weight:500'
+          : 'display:inline-flex;align-items:center;height:20px;padding:2px 8px;border-radius:26px;background:oklch(0.97 0 0);color:oklch(0.205 0 0);font-size:12px;font-weight:500'
+      }))
+    };
+
+    const pad = s.mobile ? 'padding:0 18px' : 'padding:0 40px';
+    const one = s.mobile;
+    const rooms = [
+      { name: 'Standard Queen', sleeps: 2, board: 'Room only', cancel: 'Free to 48h', price: product.price },
+      { name: 'Garden Twin', sleeps: 2, board: 'Breakfast', cancel: 'Free to 48h', price: product.price + 22 },
+      { name: 'Corner Suite', sleeps: 3, board: 'Breakfast', cancel: 'Non-refundable', price: product.price + 84 }
+    ];
+    const tag = (kind) => 'display:inline-flex;align-items:center;font-size:11px;letter-spacing:.02em;padding:3px 10px;border-radius:1.5px;' + (
+      kind === 'accent' ? 'background:#e9f8ff;color:#004961' :
+      kind === 'magenta' ? 'background:#fff1f4;color:#790e3d' :
+      'background:#f8f4f4;color:#444141');
+
+    Object.assign(vals, {
+      isNew: !built,
+      newPad: pad,
+      newSidebarCols: one ? '1fr' : '250px minmax(0,1fr)',
+      newTwoCols: one ? '1fr' : 'minmax(0,1fr) 300px',
+      newRowCols: one ? '1fr' : '180px minmax(0,1fr) 160px',
+      newRulesCols: one ? '1fr' : '1fr 1fr',
+      newOrderCols: one ? '1fr' : '90px minmax(0,1fr) 140px 100px 200px',
+      newStatCols: one ? '1fr 1fr' : 'repeat(3,minmax(0,1fr))',
+      newNav: [['search', 'Hotels'], ['orders', 'Reservations'], ['wallet', 'Wallet'], ['referrals', 'Referrals'], ['supplier', 'Supplier'], ['admin', 'Admin']]
+        .map(([id, label]) => ({
+          label, go: () => this.set('screen', id),
+          style: 'color:' + (s.screen === id || (id === 'search' && s.screen === 'product') ? '#0088b0' : '#201e1d') + ';text-decoration:none;padding-bottom:10px'
+        })),
+      newSearch: !built && s.screen === 'search',
+      newProduct: !built && s.screen === 'product',
+      newCheckout: !built && s.screen === 'checkout',
+      newOrders: !built && s.screen === 'orders',
+      newWallet: !built && s.screen === 'wallet',
+      newReferrals: !built && s.screen === 'referrals',
+      newAuth: !built && s.screen === 'auth',
+      newSupplier: !built && s.screen === 'supplier',
+      newAdmin: !built && s.screen === 'admin',
+      newDrawer: !built && s.drawer,
+      newPayOpen: !built && s.payOpen,
+      goAuth: () => this.set('screen', 'auth'),
+      addAndCheckout: () => { this.addItem(product); this.setState({ drawer: false, screen: 'checkout' }); },
+      closePay: () => this.setState({ payOpen: false, pay: 'idle' }),
+      payWord: s.pay === 'verifying' ? 'Reading' : (s.pay === 'success' ? 'Approved' : 'Touch'),
+      rooms: rooms.map(r => Object.assign({}, r, { select: () => this.addItem(product) })),
+      walletBalance: 64,
+      otpBoxes: ['4', '1', '9', '0', '', ''],
+      orders: [
+        { ref: 'AT-90412', name: 'The Halcyon', place: 'Lisbon', dates: '14–18 Sep 2026', total: 736, status: 'Confirmed', kind: 'accent' },
+        { ref: 'AT-88317', name: 'Kestrel House', place: 'Edinburgh', dates: '2–4 Nov 2026', total: 284, status: 'Awaiting supplier', kind: 'neutral' },
+        { ref: 'AT-71226', name: 'Marina Rosa', place: 'Valencia', dates: '9–12 Jun 2026', total: 288, status: 'Completed', kind: 'neutral' },
+        { ref: 'AT-64108', name: 'Hotel Verbena', place: 'Mexico City', dates: '3–7 Mar 2026', total: 484, status: 'Refunded', kind: 'magenta' }
+      ].map(o => Object.assign({}, o, { tagClass: tag(o.kind) })),
+      ledger: [
+        { date: '02 Aug', entry: 'Referral reward — Priya S.', amount: '+$20', balance: '$64', amountStyle: 'color:#006786' },
+        { date: '21 Jul', entry: 'Refund adjustment — AT-64108', amount: '+$32', balance: '$44', amountStyle: 'color:#006786' },
+        { date: '14 Jul', entry: 'Applied to order AT-71226', amount: '−$18', balance: '$12', amountStyle: 'color:#aa0b56' },
+        { date: '30 Jun', entry: 'Referral reward — Tomas L.', amount: '+$20', balance: '$30', amountStyle: 'color:#006786' },
+        { date: '12 Jun', entry: 'Goodwill credit — support case 4471', amount: '+$10', balance: '$10', amountStyle: 'color:#006786' }
+      ],
+      referrals: [
+        { who: 'Priya Sharma', sent: '18 Jul', status: 'Rewarded', reward: '$20', kind: 'accent' },
+        { who: 'Tomas Lindqvist', sent: '02 Jun', status: 'Rewarded', reward: '$20', kind: 'accent' },
+        { who: 'Nadia Haddad', sent: '29 Jul', status: 'Booked, not stayed', reward: 'Pending', kind: 'neutral' },
+        { who: 'Sam Otieno', sent: '04 Aug', status: 'Invited', reward: '—', kind: 'neutral' }
+      ].map(r => Object.assign({}, r, { tagClass: tag(r.kind) })),
+      supIsInv: s.supTab === 'inventory',
+      supIsBook: s.supTab === 'bookings',
+      supStats: [
+        { label: 'Rooms live', value: '47', note: 'Across 4 properties' },
+        { label: 'Occupancy', value: '81%', note: 'Next 30 nights' },
+        { label: 'Awaiting confirmation', value: '3', note: 'Oldest 4 hours' }
+      ],
+      supInventory: HOTELS.slice(0, 4).map((h, i) => Object.assign({}, h, { occupancy: ['81%', '64%', '92%', '73%'][i] })),
+      supQueue: [
+        { ref: 'AT-90412', name: 'The Halcyon', guest: 'A. Okonkwo', dates: '14–18 Sep', amount: 736, status: 'Pending', kind: 'magenta' },
+        { ref: 'AT-90388', name: 'Marina Rosa', guest: 'J. Meyer', dates: '20–23 Sep', amount: 288, status: 'Pending', kind: 'magenta' },
+        { ref: 'AT-90341', name: 'Kestrel House', guest: 'L. Bianchi', dates: '01–03 Oct', amount: 284, status: 'Pending', kind: 'magenta' }
+      ].map(b => Object.assign({}, b, { tagClass: tag(b.kind) })),
+      coupons: [
+        { code: 'SUMMER15', rule: '15% off, min $120, hotels', redeemed: '1,204', liability: '$18,420' },
+        { code: 'FIRSTSTAY', rule: '$20 off first order', redeemed: '844', liability: '$16,880' },
+        { code: 'CITY10', rule: '10% off, Lisbon & Valencia', redeemed: '312', liability: '$4,110' },
+        { code: 'REFER20', rule: 'Referral credit issue', redeemed: '198', liability: '$3,960' }
+      ]
+    });
+
+    vals.product = Object.assign(vals.product, { stayTotal: product.price * 4 });
+    vals.supplierBookings = vals.supplierBookings.map(sb => Object.assign({}, sb, {
+      barStyle: 'height:9px;background:#0088b0;width:' + Math.round((sb.total / 1834) * 100) + '%'
+    }));
+    vals.suppliers = vals.suppliers.map((x, i) => Object.assign({}, x, {
+      properties: [4, 1, 12, 1][i],
+      tagClass: tag(x.status === 'active' ? 'accent' : 'magenta'),
+      btnClass: x.status === 'active'
+        ? 'border:0;background:none;font:inherit;font-size:13px;color:#7d7979;padding:0'
+        : 'border:1px solid transparent;background:#0088b0;color:#f3f2f2;font:inherit;font-size:13px;padding:7px 14px;border-radius:2px;cursor:pointer'
+    }));
+
+    return vals;
+  }
+}
+
+</script>
+</body>
+</html>

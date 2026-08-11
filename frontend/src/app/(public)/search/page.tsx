@@ -1,135 +1,309 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Search as SearchIcon } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Page } from '@/components/broadsheet/Page';
+import { Kicker, Plate, Standfirst } from '@/components/broadsheet';
 
+type SearchResult = {
+  _id: string;
+  name?: string;
+  price?: number;
+  basePrice?: number;
+  rating?: number;
+  reviewCount?: number;
+  description?: string;
+  amenities?: string[];
+  location?: { city?: string; country?: string };
+};
+
+const BOARD_OPTIONS = [
+  { value: 'any', label: 'Any' },
+  { value: 'breakfast', label: 'Breakfast included' },
+  { value: 'free-cancellation', label: 'Free cancellation' },
+];
+
+// useSearchParams() opts the subtree out of prerendering, so it has to sit
+// inside a Suspense boundary for the page to build.
 export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <Page>
+          <p className="pt-[30px] text-[15px] text-ink-700">Loading…</p>
+        </Page>
+      }
+    >
+      <SearchResults />
+    </Suspense>
+  );
+}
+
+function SearchResults() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  const [category, setCategory] = useState(searchParams.get('category') || 'hotel');
+
+  const category = searchParams.get('category') || 'hotel';
+  const [destination, setDestination] = useState('Lisbon, Portugal');
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guests, setGuests] = useState('2 adults, 1 room');
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
   const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
-  
-  const [results, setResults] = useState<any[]>([]);
+  const [board, setBoard] = useState('any');
+  const [sort, setSort] = useState('recommended');
+
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchResults = async (cat: string, min?: string, max?: string) => {
-    setIsLoading(true);
-    try {
-      const query = new URLSearchParams({ category: cat });
-      if (min) query.append('minPrice', min);
-      if (max) query.append('maxPrice', max);
-      
-      const res = await fetch(`http://localhost:5000/api/v1/search?${query.toString()}`);
-      if (!res.ok) throw new Error('Search failed');
-      const data = await res.json();
-      setResults(data.data || []);
-    } catch (error) {
-      console.error(error);
-      setResults([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const fetchResults = useCallback(
+    async (cat: string, min?: string, max?: string) => {
+      setIsLoading(true);
+      try {
+        const query = new URLSearchParams({ category: cat });
+        if (min) query.append('minPrice', min);
+        if (max) query.append('maxPrice', max);
+
+        const res = await fetch(
+          `http://localhost:5000/api/v1/search?${query.toString()}`
+        );
+        if (!res.ok) throw new Error('Search failed');
+        const data = await res.json();
+        setResults(data.data || []);
+      } catch (error) {
+        console.error(error);
+        setResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     fetchResults(category, minPrice, maxPrice);
-  }, [category]); // Fetch on mount and category change
+    // Refetch on category change only; the rail applies explicitly.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/search?category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+    router.push(
+      `/search?category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}`
+    );
     fetchResults(category, minPrice, maxPrice);
   };
 
+  const sorted = [...results].sort((a, b) => {
+    const priceOf = (r: SearchResult) => r.price ?? r.basePrice ?? 0;
+    if (sort === 'price') return priceOf(a) - priceOf(b);
+    if (sort === 'rating') return (b.rating ?? 0) - (a.rating ?? 0);
+    return 0;
+  });
+
+  const city = destination.split(',')[0]?.trim() || 'Lisbon';
+
   return (
-    <div className="container py-8 flex flex-col md:flex-row gap-8">
-      {/* Sidebar Filters */}
-      <aside className="w-full md:w-64 space-y-6">
-        <div>
-          <h2 className="text-xl font-bold mb-4">Filters</h2>
-          <form onSubmit={handleSearch} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Category</label>
-              <Select value={category} onValueChange={(val) => val && setCategory(val as string)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hotel">Hotels</SelectItem>
-                  <SelectItem value="flight">Flights</SelectItem>
-                  <SelectItem value="bus">Buses</SelectItem>
-                  <SelectItem value="tour">Tours</SelectItem>
-                </SelectContent>
-              </Select>
+    <Page>
+      <div className="grid gap-10 pt-[30px] md:grid-cols-[250px_1fr]">
+        {/* Refine rail */}
+        <aside>
+          <form onSubmit={handleSearch} className="flex flex-col gap-4">
+            <Kicker>Refine</Kicker>
+
+            <Field label="Destination">
+              <Input
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+              />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-2">
+              <Field label="Check in">
+                <Input
+                  value={checkIn}
+                  placeholder="14 Sep"
+                  onChange={(e) => setCheckIn(e.target.value)}
+                />
+              </Field>
+              <Field label="Check out">
+                <Input
+                  value={checkOut}
+                  placeholder="18 Sep"
+                  onChange={(e) => setCheckOut(e.target.value)}
+                />
+              </Field>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Min Price</label>
-              <Input type="number" value={minPrice} onChange={e => setMinPrice(e.target.value)} placeholder="0" />
+
+            <Field label="Guests">
+              <Input
+                value={guests}
+                onChange={(e) => setGuests(e.target.value)}
+              />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-2">
+              <Field label="Min price">
+                <Input
+                  type="number"
+                  value={minPrice}
+                  placeholder="0"
+                  onChange={(e) => setMinPrice(e.target.value)}
+                />
+              </Field>
+              <Field label="Max price">
+                <Input
+                  type="number"
+                  value={maxPrice}
+                  placeholder="400"
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                />
+              </Field>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Max Price</label>
-              <Input type="number" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} placeholder="1000" />
-            </div>
+
+            <fieldset className="border-0 p-0">
+              <legend className="mb-2 text-xs text-ink-700">Board</legend>
+              <div className="flex flex-col gap-[7px]">
+                {BOARD_OPTIONS.map((option) => (
+                  <label
+                    key={option.value}
+                    className="inline-flex cursor-pointer items-center gap-2 text-sm"
+                  >
+                    <input
+                      type="radio"
+                      name="board"
+                      value={option.value}
+                      checked={board === option.value}
+                      onChange={() => setBoard(option.value)}
+                      className="size-4 shrink-0 accent-primary"
+                    />
+                    {option.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <Button type="submit" className="w-full">
-              <SearchIcon className="w-4 h-4 mr-2" />
-              Apply Filters
+              Apply
             </Button>
           </form>
-        </div>
-      </aside>
+        </aside>
 
-      {/* Main Content */}
-      <main className="flex-1">
-        <h1 className="text-3xl font-bold tracking-tight mb-6">Search Results</h1>
-        
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        {/* Results */}
+        <main>
+          <div className="mb-1.5 flex flex-wrap items-end justify-between gap-4">
+            <h1 className="text-[44px] leading-[1.02] tracking-[-0.015em]">
+              Hotels in {city}
+            </h1>
+            <Tabs value={sort} onValueChange={(v) => setSort(v as string)}>
+              <TabsList>
+                <TabsTrigger value="recommended">Recommended</TabsTrigger>
+                <TabsTrigger value="price">Price</TabsTrigger>
+                <TabsTrigger value="rating">Rating</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
-        ) : results.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            No {category}s found matching your criteria.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.map((item) => (
-              <Card key={item._id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push(`/product/${category}/${item._id}`)}>
-                <div className="h-48 bg-muted flex items-center justify-center">
-                  <span className="text-muted-foreground">Image Placeholder</span>
-                </div>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-xl line-clamp-1">
-                      {category === 'hotel' && item.name}
-                      {category === 'flight' && `${item.airline} (${item.flightNumber})`}
-                      {category === 'bus' && `${item.operator} - ${item.busType}`}
-                      {category === 'tour' && item.name}
-                    </CardTitle>
-                    <Badge variant="secondary">${item.price || item.basePrice || 0}</Badge>
+
+          <Standfirst className="mb-[26px]">
+            {isLoading
+              ? 'Searching…'
+              : `${sorted.length} ${
+                  sorted.length === 1 ? 'property' : 'properties'
+                }, ${guests}. Prices are per night including tax.`}
+          </Standfirst>
+
+          {!isLoading && sorted.length === 0 ? (
+            <p className="border-t border-border pt-[22px] text-[15px] text-ink-700">
+              No properties match those filters. Widen the price range or clear
+              the board filter.
+            </p>
+          ) : null}
+
+          {sorted.map((item) => {
+            const price = item.price ?? item.basePrice ?? 0;
+            return (
+              <article
+                key={item._id}
+                onClick={() => router.push(`/product/${category}/${item._id}`)}
+                className="grid cursor-pointer grid-cols-1 gap-[22px] border-t border-border py-[22px] md:grid-cols-[180px_1fr_160px]"
+              >
+                <Plate label="Plate" className="h-[130px]" />
+
+                <div>
+                  <div className="flex flex-wrap items-baseline gap-2.5">
+                    <h2 className="text-[26px] leading-[1.1]">{item.name}</h2>
+                    {item.rating ? (
+                      <span className="text-[13px] text-cyan-700">
+                        {item.rating}
+                      </span>
+                    ) : null}
+                    {item.reviewCount ? (
+                      <span className="text-[13px] text-ink-600">
+                        {item.reviewCount} reviews
+                      </span>
+                    ) : null}
                   </div>
-                  <CardDescription className="line-clamp-2">
-                    {category === 'hotel' && `${item.location.city}, ${item.location.country}`}
-                    {category === 'flight' && `${item.departure.airportCode} ➔ ${item.arrival.airportCode}`}
-                    {category === 'bus' && `${item.departure.city} ➔ ${item.arrival.city}`}
-                    {category === 'tour' && item.destination}
-                  </CardDescription>
-                </CardHeader>
-                <CardFooter>
-                  <Button variant="outline" className="w-full">View Details</Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
+                  <div className="mt-0.5 text-[15px] italic text-ink-700">
+                    {[item.location?.city, item.location?.country]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </div>
+                  {item.description ? (
+                    <p className="my-2.5 max-w-[52ch] text-[14.5px] leading-[1.5] text-pretty">
+                      {item.description}
+                    </p>
+                  ) : null}
+                  <div className="flex flex-wrap gap-1.5">
+                    {(item.amenities ?? []).slice(0, 4).map((amenity) => (
+                      <Badge key={amenity} variant="secondary">
+                        {amenity}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-start gap-2 md:items-end md:text-right">
+                  <div className="text-[11px] tracking-[0.08em] uppercase text-ink-600">
+                    From
+                  </div>
+                  <div className="text-[38px] leading-[0.9] font-semibold">
+                    ${price}
+                  </div>
+                  <div className="text-xs text-ink-600">per night</div>
+                  <Button variant="secondary" className="mt-1.5">
+                    View rooms
+                  </Button>
+                </div>
+              </article>
+            );
+          })}
+
+          {sorted.length > 0 ? (
+            <div className="h-px bg-border" role="presentation" />
+          ) : null}
+        </main>
+      </div>
+    </Page>
+  );
+}
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-[5px] block text-xs text-[color-mix(in_srgb,var(--foreground)_70%,transparent)]">
+        {label}
+      </span>
+      {children}
+    </label>
   );
 }

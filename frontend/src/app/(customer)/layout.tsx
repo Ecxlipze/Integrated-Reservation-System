@@ -1,18 +1,23 @@
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import { UserRole } from '@/store/authStore';
+import { Masthead } from '@/components/broadsheet/Masthead';
+import { Page, Colophon } from '@/components/broadsheet/Page';
 
-export default function CustomerLayout({ children }: { children: React.ReactNode }) {
+// Every surface is paper — no tinted body background, no coloured role
+// heading. Role is communicated by a cyan kicker above each page title.
+export default function CustomerLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <AuthProvider requireRole={UserRole.Customer}>
-      <div className="flex min-h-screen flex-col bg-gray-50 dark:bg-gray-900">
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="container flex h-14 items-center">
-            <h2 className="text-lg font-semibold">Customer Dashboard</h2>
-          </div>
-        </header>
-        <main className="flex-1 container py-6">
-          {children}
-        </main>
+      <div className="flex min-h-screen flex-col">
+        <Page>
+          <Masthead />
+        </Page>
+        <main className="flex-1">{children}</main>
+        <Colophon />
       </div>
     </AuthProvider>
   );
